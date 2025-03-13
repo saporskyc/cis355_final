@@ -49,26 +49,28 @@ CREATE TABLE `iss_comments` (
 
 -- users
 -- all test user passwords should evaluate to 'mypassword'
-INSERT INTO `users` (`user_id`, `admin`, `f_name`, `l_name`, `email`, `password`)
+INSERT INTO `users` (`id`, `admin`, `fname`, `lname`, `email`, `pwd_hash`)
     VALUES ("1", "Y", "The", "Boss", "bosslife@email.com", "$2a$12$QYTq9bIvZ/asycZCoh.GAOhsycshCzvEahXvXRrCczdqnGFdZ0XVS");
-INSERT INTO `users` (`user_id`, `f_name`, `l_name`, `email`, `password`)
+INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `pwd_hash`)
     VALUES ("2", "Todd", "Toddo", "oddtodd@email.com", "$2a$12$F.jpatdVlOnrYWLi/lxPNO90T0auUpFnDP5JTb3aTx7z1QSu5nX42");
-INSERT INTO `users` (`user_id`, `f_name`, `l_name`, `email`, `password`)
+INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `pwd_hash`)
     VALUES ("3", "Anne", "Person", "msperson@email.com", "$2a$12$o9lzPmLOFgpODyhYHUOXO.wojqkQph.fBZKO8k83hromrC0bC4TFi");
 
 -- issues
-INSERT INTO `issues` (`issue_id`, `s_descr`, `l_descr`, `open_date`, `close_date`, `priority`, `status`)
-    VALUES ("1", "Internet Down", "Internet connection went down at approxmiately 08:00.", "2025-02-19", "2025-02-19", "1", "CLOSED");
+INSERT INTO `issues` (`id`, `short_description`, `long_description`, `open_date`, `close_date`, `priority`, `status`, `org`, `project`)
+    VALUES ("1", "Internet Down", "Internet connection went down at approxmiately 08:00.", "2025-02-19", "2025-02-19", "1", "CLOSED", "ProNET", "Support");
 
 -- comments
-INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`)
-    VALUES ("1", "1", "Unable to ping the provided IP. Please have the resident reboot their router and let me know when that is done so I can attempt again.");
-INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`)
-    VALUES ("2", "1", "Contacted the resident, they have rebooted their router.");
-INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`)
-    VALUES ("1", "1", "I am now able to ping the IP. Please have the resident test their internet again.");
-INSERT INTO `comments` (`user_id`, `issue_id`, `short_comment`)
-    VALUES ("2", "1", "The resident confirmed their internet is back up. Closing issue.");
+INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`, `posted_date`)
+    VALUES ("2", "1", "Unable to ping the provided IP. Please have the resident reboot their router and let me know when that is done so I can attempt again.", (SELECT CURRENT_DATE()));
+INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`, `posted_date`)
+    VALUES ("3", "1", "Contacted the resident, they have rebooted their router.", (SELECT CURRENT_DATE()));
+INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`, `posted_date`)
+    VALUES ("2", "1", "I am now able to ping the IP. Please have the resident test their internet again.", (SELECT CURRENT_DATE()));
+INSERT INTO `comments` (`user_id`, `issue_id`, `long_comment`, `posted_date`)
+    VALUES ("3", "1", "The resident confirmed their internet is back up.", (SELECT CURRENT_DATE()));
+INSERT INTO `comments` (`user_id`, `issue_id`, `short_comment`, `posted_date`)
+    VALUES ("3", "1", "Closing issue.", (SELECT CURRENT_DATE()));
 
 -- execute
 COMMIT;
