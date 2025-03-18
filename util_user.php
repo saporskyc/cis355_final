@@ -1,6 +1,6 @@
-<!-- --
+<!--
     Author: Calob Saporsky
-    Description: database utility class for interaction with table 'iss_persons'
+    Description: database utility class for interaction with table 'users'
 -->
 
 <?php
@@ -12,7 +12,7 @@
         //pull all users
         public static function getAll () {
             //set query and connect to database
-            $qry = "SELECT iss_persons.id, iss_persons.fname, iss_persons.lname, iss_persons.email FROM iss_persons";
+            $qry = "SELECT users.user_id, users.f_name, users.l_name, users.email FROM users";
             $pdo = Database::connect();
 
             //run query, convert data into array
@@ -29,7 +29,7 @@
         //pull one user with a matching id
         public static function getOne (string $id) {
             //set query and connect to database
-            $qry = "SELECT * FROM iss_persons WHERE iss_persons.id = $id";
+            $qry = "SELECT * FROM users WHERE users.user_id = $id";
             $pdo = Database::connect();
 
             //execute query, convert data to array
@@ -44,18 +44,18 @@
         }
 
         //create a new user
-        public static function newUser ($admin, string $fname, string $lname, string $email, string $password) {
+        public static function newUser ($admin, string $f_name, string $l_name, string $email, string $password) {
             //hash password
             $password = password_hash($password, PASSWORD_BCRYPT);
             
             //set query
             $qry = "";
             if ($admin == "Y") {
-                $qry = "INSERT INTO iss_persons (admin, fname, lname, email, pwd_hash)
-                        VALUES ($admin, $fname, $lname, $email, $password)";
+                $qry = "INSERT INTO users (admin, f_name, l_name, email, password)
+                        VALUES ($admin, $f_name, $l_name, $email, $password)";
             } else {
-                $qry = "INSERT INTO iss_persons (fname, lname, email, pwd_hash)
-                        VALUES ($fname, $lname, $email, $password)";
+                $qry = "INSERT INTO users (f_name, l_name, email, password)
+                        VALUES ($f_name, $l_name, $email, $password)";
             }
             
             //connect to database
@@ -71,7 +71,7 @@
         //delete an existing user by id
         public static function deleteIssue (String $id) {
             //set query and connect to database
-            $qry = "DELETE FROM iss_persons WHERE iss_persons.id = $id";
+            $qry = "DELETE FROM users WHERE users.user_id = $id";
             $pdo = Database::connect();
             
             //execute query
@@ -87,7 +87,7 @@
             $pdo = Database::connect();
 
             //pull the existing record
-            $qry = "SELECT * FROM iss_persons WHERE iss_persons.id = $id";
+            $qry = "SELECT * FROM users WHERE users.user_id = $id";
             $data = $pdo->query($qry);
             $existingRec = $data->fetch(PDO::FETCH_ASSOC);
 
@@ -95,7 +95,7 @@
             //check if an existing record was found
             if ($existingRec != false) {
                 //initiliaze update query and variable determining whether update is necessary
-                $qry = "UPDATE iss_persons SET";
+                $qry = "UPDATE users SET";
                 $update = false;
                 
                 //check existing keys in edits array and modify query
@@ -104,13 +104,13 @@
                     $update = true;
                 }
                 
-                if (array_key_exists("fname", $edits) && $existingRec["fname"] != $edits["fname"]) {
-                    $qry = $qry . ' fname = ' . $edits["fname"];
+                if (array_key_exists("f_name", $edits) && $existingRec["f_name"] != $edits["f_name"]) {
+                    $qry = $qry . ' f_name = ' . $edits["f_name"];
                     $update = true;
                 }
 
-                if (array_key_exists("lname", $edits) && $existingRec["lname"] != $edits["lname"]) {
-                    $qry = $qry . ' lname = ' . $edits["lname"];
+                if (array_key_exists("l_name", $edits) && $existingRec["l_name"] != $edits["l_name"]) {
+                    $qry = $qry . ' l_name = ' . $edits["l_name"];
                     $update = true;
                 }
 
@@ -122,14 +122,14 @@
                 if (array_key_exists("password", $edits) && $edits["password"] != null && trim($edits["password"]) != "") {
                     //hash the new password
                     $password = password_hash($edits["password"], PASSWORD_BCRYPT);
-                    $qry = $qry . ' pwd_hash = ' . $password;
+                    $qry = $qry . ' password = ' . $password;
                     $update = true;
                 }
 
                 //check for need to update
                 if ($update) {
                     //finalize query
-                    $qry = $qry . "WHERE iss_persons.id = $id";
+                    $qry = $qry . "WHERE users.user_id = $id";
 
                     //execute
                     $pdo->execute($qry);
@@ -146,14 +146,14 @@
             $pdo = Database::connect();
 
             //pull users with a matching email
-            $qry = "SELECT * FROM iss_persons WHERE iss_persons.email = $email";
+            $qry = "SELECT * FROM users WHERE users.email = $email";
             $data = $pdo->query($qry);
 
             //check if any users with a matching email were pulled
             if (($data->fetch(PDO::FETCH_ASSOC)) != false) {
                 //loop through the users and check passwords
                 foreach ($data as $user) {
-                    if (password_verify($password, $user['pwd_hash'])) {
+                    if (password_verify($password, $user['password'])) {
                         //disconnect from db and return user
                         Database::disconnect();
                         return $user;

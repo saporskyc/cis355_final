@@ -1,4 +1,4 @@
-<!-- --
+<!--
     Author: Calob Saporsky
     Description: creates class to handle database connection
                  referenced github.com/cis355/fr when creating this file

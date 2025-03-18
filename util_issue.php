@@ -1,6 +1,6 @@
-<!-- --
+<!--
     Author: Calob Saporsky
-    Description: database utility class for interaction with table 'iss_issues'
+    Description: database utility class for interaction with table 'issues'
 -->
 
 <?php
@@ -12,7 +12,7 @@
         //pull all issues
         public static function getAll () {
             //set query and connect to database
-            $qry = "SELECT * FROM iss_issues";
+            $qry = "SELECT * FROM issues";
             $pdo = Database::connect();
 
             //run query, convert data into array
@@ -29,11 +29,11 @@
         //pull one issue, its comments, and the users who left the comments
         public static function getOne (string $id) {
             //set query and connect to database
-            $qry = "SELECT iss_issues.*, comments.short_comment, comments.long_comment, users.fname, users.lname
-                    FROM iss_issues
-                    LEFT JOIN iss_comments ON iss_comments.id = iss_issues.id
-                    LEFT JOIN iss_users ON iss_persons.id = iss_comments.id
-                    WHERE iss_issues.id = $id";
+            $qry = "SELECT issues.*, comments.comment, users.f_name, users.l_name
+                    FROM issues
+                    LEFT JOIN comments ON comments.comment_id = issues.issue_id
+                    LEFT JOIN users ON users.user_id = comments.comment_id
+                    WHERE issues.issue_id = $id";
             $pdo = Database::connect();
 
             //execute query, convert data to array
@@ -50,7 +50,7 @@
         //create a new issue
         public static function newIssue (string $s_descr, string $l_descr, string $priority, string $status, string $org, string $project) {
             //set query and connect to database
-            $qry = "INSERT INTO iss_issues (short_description, long_description, open_date, priority, status, org, project)
+            $qry = "INSERT INTO issues (s_desrc, l_desrc, open_date, priority, status, org, project)
                     VALUES ($s_descr, $l_descr, (SELECT CURRENT_DATE()), $priority, $status, $org, $status)";
             $pdo = Database::connect();
 
@@ -64,8 +64,8 @@
         //delete an existing issue and its comments by id
         public static function deleteIssue (String $id) {
             //set queries and connect to database
-            $delIssue = "DELETE FROM iss_issues WHERE iss_issues.id = $id";
-            $delComments = "DELETE FROM iss_comments WHERE iss_comments.id = $id";
+            $delIssue = "DELETE FROM issues WHERE issues.issue_id = $id";
+            $delComments = "DELETE FROM comments WHERE comments.comment_id = $id";
             $pdo = Database::connect();
             
             //execute deletions
@@ -82,24 +82,24 @@
             $pdo = Database::connect();
 
             //pull the existing record
-            $qry = "SELECT * FROM iss_issues WHERE iss_issues.id = $id";
+            $qry = "SELECT * FROM issues WHERE issues.issue_id = $id";
             $data = $pdo->query($qry);
             $existingRec = $data->fetch(PDO::FETCH_ASSOC);
 
             //check if an existing record was found
             if ($existingRec != false) {
                 //initiliaze update query and variable determining whether update is necessary
-                $qry = "UPDATE iss_issues SET";
+                $qry = "UPDATE issues SET";
                 $update = false;
                 
                 //check existing keys in edits array and modify query
-                if (array_key_exists("s_descr", $edits) && $existingRec["short_description"] != $edits["s_descr"]) {
-                    $qry = $qry . ' short_description = ' . $edits["s_descr"];
+                if (array_key_exists("s_descr", $edits) && $existingRec["s_descr"] != $edits["s_descr"]) {
+                    $qry = $qry . ' s_descr = ' . $edits["s_descr"];
                     $update = true;
                 }
 
-                if (array_key_exists("l_descr", $edits) && $existingRec["long_description"] != $edits["l_descr"]) {
-                    $qry = $qry . ' long_description = ' . $edits["l_descr"];
+                if (array_key_exists("l_descr", $edits) && $existingRec["l_descr"] != $edits["l_descr"]) {
+                    $qry = $qry . ' l_descr = ' . $edits["l_descr"];
                     $update = true;
                 }
 
@@ -116,7 +116,7 @@
                 //check for need to update
                 if ($update) {
                     //finalize query
-                    $qry = $qry . " WHERE iss_issues.id = $id";
+                    $qry = $qry . " WHERE issues.issue_id = $id";
 
                     //execute
                     $pdo->execute($qry);
