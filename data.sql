@@ -4,7 +4,10 @@
 -- initialize transaction
 START TRANSACTION;
 
--- create table persons, set primary key, auto increment
+-- drop tables if they already exist
+DROP TABLE IF EXISTS `users`, `issues`, `comments`;
+
+-- create table persons
 CREATE TABLE `users` (
     `user_id` int(11) NOT NULL AUTO_INCREMENT,
     `admin` varchar(255) DEFAULT "N",
@@ -15,7 +18,7 @@ CREATE TABLE `users` (
     Primary Key (`user_id`)
 );
 
--- create table issues, set primary key, auto increment
+-- create table issues
 CREATE TABLE `issues` (
     `issue_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11),
@@ -29,7 +32,7 @@ CREATE TABLE `issues` (
     Primary Key (`issue_id`)
 );
 
--- create table comments, set primary key, auto increment
+-- create table comments
 CREATE TABLE `comments` (
     `comment_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,

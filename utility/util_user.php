@@ -43,29 +43,32 @@
             return $data;
         }
 
-        //create a new user
-        public static function newUser ($admin, string $f_name, string $l_name, string $email, string $password) {
+        /*
+            create a new user
+            new users are not admins by default
+            a user must be set to admin through the edit screen or the database directly
+        */
+        public static function newUser (string $f_name, string $l_name, string $email, string $password) {
             //hash password
             $password = password_hash($password, PASSWORD_BCRYPT);
             
             //set query
-            $qry = "";
-            if ($admin == "Y") {
-                $qry = "INSERT INTO users (admin, f_name, l_name, email, password)
-                        VALUES ($admin, $f_name, $l_name, $email, $password)";
-            } else {
-                $qry = "INSERT INTO users (f_name, l_name, email, password)
-                        VALUES ($f_name, $l_name, $email, $password)";
-            }
-            
+            $qry = "INSERT INTO users (`f_name`, `l_name`, `email`, `password`)
+                    VALUES ('$f_name', '$l_name', '$email', '$password')";
+
             //connect to database
             $pdo = Database::connect();
 
-            //execute query
-            $pdo->query(array($qry));
-
-            //disconnect
-            Database::disconnect();
+            //execute query, disconnect, return true or false based on success
+            try{
+                $pdo->query($qry);
+                Database::disconnect();
+                return true;
+            } catch (PDOException $e) {
+                Database::disconnect();
+                echo $e->getMessage() . "<br>";
+                return false;
+            }
         }
 
         //delete an existing user by id
@@ -148,17 +151,16 @@
             //pull users with a matching email
             $qry = "SELECT * FROM users WHERE users.email = '$email'";
             $data = null;
-            $pulled = false;
             try {
                 $data = $pdo->query($qry);
-                $pulled = true;
             } catch (PDOException $e) {
                 Database::disconnect();
+                echo $e->getMessage() . "<br>";
                 return false;
             }
 
             //check if any users with a matching email were pulled
-            if ($pulled == true) {
+            if ($data != null) {
                 //loop through the users and check passwords
                 foreach ($data as $user) {
                     // return "entered loop";

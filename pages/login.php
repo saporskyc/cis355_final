@@ -6,12 +6,12 @@
 -->
 
 <?php
+    echo "hello from login.php<br>";
     //import necessary file
     require "../utility/util_user.php";
 
     //start session
     session_start();
-    echo "hello from login.php<br>";
 
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
@@ -22,7 +22,7 @@
     }
 
     //check for an entered email and password
-    if ((isset($_POST["entered_email"]) && isset($_POST["entered_pass"])) && (trim($_POST["entered_email"]) != "" && trim($_POST["entered_pass"]) != "")) {
+    if (!empty($_POST["entered_email"]) && !empty($_POST["entered_pass"])) {
         //validate login
         $user = UserUtility::validateLogin($_POST["entered_email"], $_POST["entered_pass"]);
 
@@ -48,9 +48,9 @@
         <!-- login form -->
         <form action="login.php" method="post">
             <!-- email and password fields -->
-            <input type="text" style="padding-top: 5px;" name="entered_email" placeholder="email"><br>
+            <input type="text" style="padding-top: 5px;" name="entered_email" placeholder="Email"><br>
             <br>
-            <input type="text" style="padding-top: 5px;" name="entered_pass" placeholder="password"><br>
+            <input type="text" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
             <br>
 
             <!-- login button -->

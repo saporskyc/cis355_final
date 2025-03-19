@@ -25,7 +25,7 @@
             </button>
         </form>
         
-        <!-- register button -->
+        <!-- new user button -->
         <form action="pages/new_user.php">
             <button type="submit">
                 New User
