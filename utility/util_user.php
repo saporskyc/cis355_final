@@ -87,58 +87,111 @@
             //connect to database
             $pdo = Database::connect();
 
-            //pull the existing record
-            $qry = "SELECT * FROM users WHERE users.user_id = $id";
-            $data = $pdo->query($qry);
-            $existingRec = $data->fetch(PDO::FETCH_ASSOC);
+            //pull the existing record. on error, return false and display error
+            $qry = "SELECT * FROM users WHERE users.user_id = '$id'";
+            $existingRec = null;
+            try {
+                $data = $pdo->query($qry);
+                $data = $data->fetch(PDO::FETCH_ASSOC);
+                $existingRec = $data;
+            } catch (PDOException $e) {
+                Database::disconnect();
+                echo $e->getMessage() . "<br>";
+                return false;
+            }
 
 
             //check if an existing record was found
-            if ($existingRec != false) {
-                //initiliaze update query and variable determining whether update is necessary
+            if ($existingRec != null && $existingRec != false) {
+                //init vars
                 $qry = "UPDATE users SET";
                 $update = false;
+                $firstMod = true;
                 
                 //check existing keys in edits array and modify query
-                if (array_key_exists("admin", $edits) && $existingRec["admin"] != $edits["admin"]) {
-                    $qry = $qry . ' admin = ' . $edits["admin"];
+                if (array_key_exists("admin", $edits) && $existingRec["admin"] != $edits["admin"] && !empty($edits["admin"])) {
+                    if ($firstMod) {
+                        $qry = $qry . ' admin = "' . $edits["admin"] . '"';
+                        $firstMod = false;
+                    } else if (substr($qry, -1) != ",") {
+                        $qry = $qry . ', admin = "' . $edits["admin"] . '"';
+                    } else {
+                        $qry = $qry . ' admin = "' . $edits["admin"] . '",';
+                    }
                     $update = true;
                 }
                 
-                if (array_key_exists("f_name", $edits) && $existingRec["f_name"] != $edits["f_name"]) {
-                    $qry = $qry . ' f_name = ' . $edits["f_name"];
+                if (array_key_exists("entered_fname", $edits) && $existingRec["f_name"] != $edits["entered_fname"] && !empty($edits["entered_fname"])) {
+                    if ($firstMod) {
+                        $qry = $qry . ' f_name = "' . $edits["entered_fname"]  . '"';
+                        $firstMod = false;
+                    } else if (substr($qry, -1) != ",") {
+                        $qry = $qry . ', f_name = "' . $edits["entered_fname"] . '"';
+                    } else {
+                        $qry = $qry . ' f_name = "' . $edits["entered_fname"] . '",';
+                    }
                     $update = true;
                 }
 
-                if (array_key_exists("l_name", $edits) && $existingRec["l_name"] != $edits["l_name"]) {
-                    $qry = $qry . ' l_name = ' . $edits["l_name"];
+                if (array_key_exists("entered_lname", $edits) && $existingRec["l_name"] != $edits["entered_lname"] && !empty($edits["entered_lname"])) {
+                    if ($firstMod) {
+                        $qry = $qry . ' l_name = "' . $edits["entered_lname"]  . '"';
+                        $firstMod = false;
+                    } else if (substr($qry, -1) != ",") {
+                        $qry = $qry . ', l_name = "' . $edits["entered_lname"] . '"';
+                    } else {
+                        $qry = $qry . ' l_name = "' . $edits["entered_lname"] . '",';
+                    }
                     $update = true;
                 }
 
-                if (array_key_exists("email", $edits) && $existingRec["email"] != $edits["email"]) {
-                    $qry = $qry . ' email = ' . $edits["email"];
+                if (array_key_exists("entered_email", $edits) && $existingRec["email"] != $edits["entered_email"] && !empty($edits["entered_email"])) {
+                    if ($firstMod) {
+                        $qry = $qry . ' email = "' . $edits["entered_email"]  . '"';
+                        $firstMod = false;
+                    } else if (substr($qry, -1) != ",") {
+                        $qry = $qry . ', email = "' . $edits["entered_email"] . '"';
+                    } else {
+                        $qry = $qry . ' email = "' . $edits["entered_email"] . '",';
+                    }
                     $update = true;
                 }
 
-                if (array_key_exists("password", $edits) && $edits["password"] != null && trim($edits["password"]) != "") {
-                    //hash the new password
-                    $password = password_hash($edits["password"], PASSWORD_BCRYPT);
-                    $qry = $qry . ' password = ' . $password;
-                    $update = true;
+                if (array_key_exists("entered_pass", $edits) && !empty($edits["entered_pass"])) {
+                    //check for new password
+                    $password = null;
+                    if ($edits["entered_pass"] != $existingRec['password']) {
+                        //hash the new password
+                        $password = password_hash($edits["entered_pass"], PASSWORD_BCRYPT);
+                        if ($firstMod) {
+                            $qry = $qry . ' password = "' . $password . '"';
+                            $firstMod = false;
+                        } else if (substr($qry, -1) != ",") {
+                            $qry = $qry . ', password = "' . $password . '"';
+                        } else {
+                            $qry = $qry . ' password = "' . $password . '",';
+                        }
+                        $update = true;
+                    }
                 }
 
                 //check for need to update
                 if ($update) {
                     //finalize query
-                    $qry = $qry . "WHERE users.user_id = $id";
+                    $qry = $qry . " WHERE users.user_id = $id";
 
-                    //execute
-                    $pdo->execute($qry);
+                    //execute the query, return true or false based on success
+                    try {
+                        $pdo->query($qry);
+                        Database::disconnect();
+                        return true;
+                    } catch (PDOException $e) {
+                        Database::disconnect();
+                        echo $e->getMessage() . "<br>";
+                        return false;
+                    }
                 }
             }
-
-            //disconnect
-            Database::disconnect();
         }
 
         //login validation function - returns the user if valid login, else false

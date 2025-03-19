@@ -73,7 +73,7 @@
             </form>
 
             <!-- user profile button -->
-            <form style="display: inline;" action="">
+            <form style="display: inline;" action="user_profile.php">
                 <button type="submit">
                     My Profile
                 </button>

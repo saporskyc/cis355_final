@@ -50,7 +50,7 @@
             <!-- email and password fields -->
             <input type="text" style="padding-top: 5px;" name="entered_email" placeholder="Email"><br>
             <br>
-            <input type="text" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
+            <input type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
             <br>
 
             <!-- login button -->
