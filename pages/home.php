@@ -1,8 +1,9 @@
 <!--
     Author: Calob Saporsky
     Description: application home page
-                 displays all current issues and redirects to either the issue details page, or
-                 the user management page
+                 displays all current issues and allows navigation to issues assigned to user,
+                 issue creation, issue details, user profile for self-editing, and user
+                 management screen if the user is an admin
 -->
 
 <?php
