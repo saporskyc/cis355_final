@@ -6,14 +6,24 @@
 -->
 
 <?php
-    echo "hello from home.php";
+    echo "hello from home.php<br>";
     //import necessary file
     require "../utility/util_issue.php";
+    require "../utility/util_user.php";
 
     //start session
     session_start();
 
     //check login status
+    if (!isset($_SESSION["user_id"])) {
+        //invalid access, destroy session and redirect
+        session_destroy();
+        header('Location: ../launch_page.php');
+        exit(0);
+    }
+
+    //pull user currently logged in
+    $user = UserUtility::getOne($_SESSION["user_id"]);
 ?>
 
 <!DOCTYPE html>
@@ -23,21 +33,51 @@
         <!-- current user info -->
         <h3>
             <?php
-                //pull current user
-
                 //display name and email
+                echo $user["f_name"] . " " . $user["l_name"] . " | " . $user["email"];
             ?>
         </h3>
         <br>
 
-        <!-- logout button -->
-        <form action="../utility/logout.php">
-            <button type="submit">
-                Logout
-            </button>
-        </form>
+        <!-- buttons -->
+        <row>
+            <!-- logout button -->
+            <form style="display: inline; padding-right: 75px;" action="../utility/logout.php">
+                <button type="submit">
+                    Logout
+                </button>
+            </form>
+            
+            <!-- user management, admin only -->
+            <?php if ($user["admin"] == "Y") {?>
+                <form style="display: inline;" action="">
+                    <button type="submit">
+                        User Management
+                    </button>
+                </form>
+            <?php } ?>
 
-        <!-- admin buttons -->
+            <!-- new issue button -->
+            <form style="display: inline;" action="">
+                <button type="submit">
+                    New Issue
+                </button>
+            </form>
+
+            <!-- user's issues button -->
+            <form style="display: inline;" action="">
+                <button type="submit">
+                    My Issues
+                </button>
+            </form>
+
+            <!-- user profile button -->
+            <form style="display: inline;" action="">
+                <button type="submit">
+                    My Profile
+                </button>
+            </form>
+        </row>
 
         <!-- issues display -->
     </div>

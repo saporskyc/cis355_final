@@ -7,7 +7,7 @@
 
 <?php
     //import necessary file
-    require 'database.php';
+    require_once 'database.php';
 
     class CommentUtility {
         

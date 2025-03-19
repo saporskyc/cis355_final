@@ -19,14 +19,14 @@
         <br>
 
         <!-- login button -->
-        <form action="pages/login.php">
+        <form style="display: inline;" action="pages/login.php">
             <button typ="submit">
                 Login
             </button>
         </form>
         
         <!-- new user button -->
-        <form action="pages/new_user.php">
+        <form style="display: inline;" action="pages/new_user.php">
             <button type="submit">
                 New User
             </button>

@@ -5,7 +5,7 @@
 
 <?php
     //import necessary files
-    require 'database.php';
+    require_once 'database.php';
 
     class UserUtility {
 
@@ -17,13 +17,12 @@
 
             //run query, convert data into array
             $data = $pdo->query($qry);
-            $data = $data->fetch_all(PDO::FETCH_DEFAULT);
 
             //disconnect
             Database::disconnect();
 
             //return data as array of all returned records
-            return $data;
+            return $data->fetch_all(PDO::FETCH_DEFAULT);;
         }
 
         //pull one user with a matching id
@@ -34,13 +33,12 @@
 
             //execute query, convert data to array
             $data = $pdo->query($qry);
-            $data = $data->fetch(PDO::FETCH_ASSOC);
 
             //disconnect
             Database::disconnect();
 
             //return data as array indexed by column
-            return $data;
+            return $data->fetch(PDO::FETCH_ASSOC);
         }
 
         /*
@@ -72,7 +70,7 @@
         }
 
         //delete an existing user by id
-        public static function deleteIssue (String $id) {
+        public static function deleteUser (String $id) {
             //set query and connect to database
             $qry = "DELETE FROM users WHERE users.user_id = $id";
             $pdo = Database::connect();
@@ -163,7 +161,6 @@
             if ($data != null) {
                 //loop through the users and check passwords
                 foreach ($data as $user) {
-                    // return "entered loop";
                     if (password_verify($password, $user['password'])) {
                         //disconnect from db and return user
                         Database::disconnect();

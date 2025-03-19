@@ -5,7 +5,7 @@
 
 <?php
     //import necessary files
-    require 'database.php';
+    require_once 'database.php';
 
     class IssueUtility {
 
@@ -17,13 +17,12 @@
 
             //run query, convert data into array
             $data = $pdo->query($qry);
-            $data = $data->fetch_all(PDO::FETCH_DEFAULT);
 
             //disconnect
             Database::disconnect();
 
             //return data as array of all returned records
-            return $data;
+            return $data->fetch_all(PDO::FETCH_DEFAULT);
         }
 
         //pull one issue, its comments, and the users who left the comments
@@ -38,13 +37,12 @@
 
             //execute query, convert data to array
             $data = $pdo->query($qry);
-            $data = $data->fetch(PDO::FETCH_ASSOC);
 
             //disconnect
             Database::disconnect();
 
             //return data as array indexed by column
-            return $data;
+            return $data->fetch(PDO::FETCH_ASSOC);
         }
 
         //create a new issue
@@ -61,11 +59,11 @@
             Database::disconnect();
         }
 
-        //delete an existing issue and its comments by id
+        //delete an existing issue and its comments by issue id
         public static function deleteIssue (String $id) {
             //set queries and connect to database
             $delIssue = "DELETE FROM issues WHERE issues.issue_id = $id";
-            $delComments = "DELETE FROM comments WHERE comments.comment_id = $id";
+            $delComments = "DELETE FROM comments WHERE comments.issue_id = $id";
             $pdo = Database::connect();
             
             //execute deletions
