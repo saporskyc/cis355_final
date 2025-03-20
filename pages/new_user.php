@@ -25,9 +25,17 @@
 
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
-        //clear post, redirect to landing page
-        $_POST = array();
-        header('Location: ../launch_page.php');
+        //check if redirect has been set
+        if ($redirect != null) {
+            //clear post, redirect to user management page
+            $_POST = array();
+            header($redirect);
+        } else {
+            //clear post, destroy session, redirect to landing page
+            session_destroy();
+            $_POST = array();
+            header('Location: ../launch_page.php');
+        }
     }
 
     //check for values in post
