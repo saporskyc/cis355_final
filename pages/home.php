@@ -51,7 +51,7 @@
             
             <!-- user management, admin only -->
             <?php if ($user["admin"] == "Y") {?>
-                <form style="display: inline;" action="">
+                <form style="display: inline;" action="user_management.php">
                     <button type="submit">
                         User Management
                     </button>
@@ -73,8 +73,8 @@
             </form>
 
             <!-- user profile button -->
-            <form style="display: inline;" action="user_profile.php">
-                <button type="submit">
+            <form style="display: inline;" method="GET" action="edit_user.php?page_form=">
+                <button name="page_form" type="submit" value="my_profile">
                     My Profile
                 </button>
             </form>

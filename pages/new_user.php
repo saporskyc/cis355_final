@@ -10,6 +10,19 @@
     //import necessary file
     require "../utility/util_user.php";
 
+    //start session
+    session_start();
+
+    //check login status
+    $redirect = null;
+    if (isset($_SESSION["user_id"])) {
+        //check admin
+        if ($_SESSION["admin"] == "Y") {
+            //set different redirect
+            $redirect = 'Location: user_management.php';
+        }
+    }
+
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
         //clear post, redirect to landing page
@@ -64,7 +77,7 @@
                 $_POST = array();
 
                 //redirect to login page
-                header('Location: login.php');
+                $redirect != null ? header($redirect) : header('Location: login.php');
             }
         }
     }
@@ -79,7 +92,7 @@
             <!-- email and password fields -->
             <input type="text" style="padding-top: 5px;" name="entered_email" placeholder="Email"><br>
             <br>
-            <input type="text" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
+            <input type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
             <br>
             <input type="text" style="padding-top: 5px;" name="entered_fname" placeholder="First Name"><br>
             <br>

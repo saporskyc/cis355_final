@@ -26,10 +26,11 @@
         //validate login
         $user = UserUtility::validateLogin($_POST["entered_email"], $_POST["entered_pass"]);
 
-        //check login status
+        //check if login succeeded
         if (is_array($user) && !empty($user)) {
             //login success, store user_id in $_SESSION
             $_SESSION["user_id"] = $user["user_id"];
+            $_SESSION["admin"] = $user["admin"];
 
             //clear post, redirect to application home page
             $_POST = array();

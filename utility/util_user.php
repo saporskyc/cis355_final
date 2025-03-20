@@ -12,7 +12,7 @@
         //pull all users
         public static function getAll () {
             //set query and connect to database
-            $qry = "SELECT users.user_id, users.f_name, users.l_name, users.email FROM users";
+            $qry = "SELECT users.user_id, users.admin, users.f_name, users.l_name, users.email FROM users";
             $pdo = Database::connect();
 
             //run query, convert data into array
@@ -22,13 +22,13 @@
             Database::disconnect();
 
             //return data as array of all returned records
-            return $data->fetch_all(PDO::FETCH_DEFAULT);;
+            return $data->fetchAll(PDO::FETCH_DEFAULT);
         }
 
         //pull one user with a matching id
         public static function getOne (string $id) {
             //set query and connect to database
-            $qry = "SELECT * FROM users WHERE users.user_id = $id";
+            $qry = "SELECT * FROM users WHERE users.user_id = '$id'";
             $pdo = Database::connect();
 
             //execute query, convert data to array
@@ -75,11 +75,14 @@
             $qry = "DELETE FROM users WHERE users.user_id = $id";
             $pdo = Database::connect();
             
-            //execute query
-            $pdo->query($qry);
-
-            //disconnect
-            Database::disconnect();
+            //execute query and disconnect from database
+            try{
+                $pdo->query($qry);
+                Database::disconnect();
+            } catch (PDOException $e) {
+                Database::disconnect();
+                echo $e->getMessage() . "<br>";
+            }
         }
 
         //update an existing user
@@ -92,8 +95,7 @@
             $existingRec = null;
             try {
                 $data = $pdo->query($qry);
-                $data = $data->fetch(PDO::FETCH_ASSOC);
-                $existingRec = $data;
+                $existingRec = $data->fetch(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 Database::disconnect();
                 echo $e->getMessage() . "<br>";
@@ -109,14 +111,14 @@
                 $firstMod = true;
                 
                 //check existing keys in edits array and modify query
-                if (array_key_exists("admin", $edits) && $existingRec["admin"] != $edits["admin"] && !empty($edits["admin"])) {
+                if (array_key_exists("entered_admin", $edits) && $existingRec["admin"] != $edits["entered_admin"] && ($edits["entered_admin"] == 'Y' || $edits["entered_admin"] == 'N')) {
                     if ($firstMod) {
-                        $qry = $qry . ' admin = "' . $edits["admin"] . '"';
+                        $qry = $qry . ' admin = "' . $edits["entered_admin"] . '"';
                         $firstMod = false;
                     } else if (substr($qry, -1) != ",") {
-                        $qry = $qry . ', admin = "' . $edits["admin"] . '"';
+                        $qry = $qry . ', admin = "' . $edits["entered_admin"] . '"';
                     } else {
-                        $qry = $qry . ' admin = "' . $edits["admin"] . '",';
+                        $qry = $qry . ' admin = "' . $edits["entered_admin"] . '",';
                     }
                     $update = true;
                 }
