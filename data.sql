@@ -53,9 +53,35 @@ INSERT INTO `users` (`user_id`, `f_name`, `l_name`, `email`, `password`)
 INSERT INTO `users` (`user_id`, `f_name`, `l_name`, `email`, `password`)
     VALUES ("3", "Anne", "Person", "msperson@test.com", "$2a$12$o9lzPmLOFgpODyhYHUOXO.wojqkQph.fBZKO8k83hromrC0bC4TFi");
 
--- issues
+
+
+-- issues, entered in jumbled order to test sorting
+
+-- closed
 INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `l_descr`, `open_date`, `close_date`, `priority`, `status`)
     VALUES ("1", "2", "PrimeNet", "Internet Down", "Internet connection went down at approxmiately 08:00.", (SELECT CURRENT_DATE()), (SELECT CURRENT_DATE()), "1", "CLOSED");
+INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `open_date`, `close_date`, `priority`, `status`)
+    VALUES ("2", "2", "TestData", "Closed 1", (SELECT CURRENT_DATE()), (SELECT CURRENT_DATE()), "2", "CLOSED");
+
+-- open
+INSERT INTO `issues` (`issue_id`, `organization`, `s_descr`, `open_date`, `priority`, `status`)
+    VALUES ("3", "TestData", "Unassigned 1", (SELECT CURRENT_DATE()), "5", "OPEN");
+INSERT INTO `issues` (`issue_id`, `organization`, `s_descr`, `open_date`, `priority`, `status`)
+    VALUES ("4", "TestData", "Unassigned 2", (SELECT CURRENT_DATE()), "6", "OPEN");
+INSERT INTO `issues` (`issue_id`, `organization`, `s_descr`, `open_date`, `priority`, `status`)
+    VALUES ("5", "TestData", "Unassigned 3", (SELECT CURRENT_DATE()), "5", "OPEN");
+
+-- closed
+INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `open_date`, `close_date`, `priority`, `status`)
+    VALUES ("6", "3", "TestData", "Closed 2", (SELECT CURRENT_DATE()), (SELECT CURRENT_DATE()), "2", "CLOSED");
+INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `open_date`, `close_date`, `priority`, `status`)
+    VALUES ("7", "3", "TestData", "Closed 3", (SELECT CURRENT_DATE()), (SELECT CURRENT_DATE()), "3", "CLOSED");
+
+-- open and assigned
+INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `open_date`, `priority`, `status`)
+    VALUES ("8", "3", "TestData", "Assigned 1", (SELECT CURRENT_DATE()), "3", "OPEN");
+
+
 
 -- comments
     -- SELECT NOW() returns the datetime the statement executes at

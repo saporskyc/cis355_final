@@ -5,7 +5,7 @@
 -->
 
 <?php
-    echo "hello from user_profile.php<br>";
+    echo "hello from edit_user.php<br>";
     //start session
     session_start();
 

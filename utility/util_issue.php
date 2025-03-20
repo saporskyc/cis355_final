@@ -12,7 +12,9 @@
         //pull all issues
         public static function getAll () {
             //set query and connect to database
-            $qry = "SELECT * FROM issues";
+            // $qry = "SELECT * FROM issues";
+            $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
+                    LEFT JOIN users ON users.user_id = issues.user_id";
             $pdo = Database::connect();
 
             //run query, convert data into array
@@ -22,7 +24,7 @@
             Database::disconnect();
 
             //return data as array of all returned records
-            return $data->fetch_all(PDO::FETCH_DEFAULT);
+            return $data->fetchAll(PDO::FETCH_DEFAULT);
         }
 
         //pull one issue, its comments, and the users who left the comments
@@ -123,6 +125,43 @@
 
             //disconnect
             Database::disconnect();
+        }
+
+        /*
+            method to sort an array of issues
+            hierarchy is:
+                assigned to passed in user - open
+                open
+                closed
+            will not be viable for a large number of issues
+        */
+        public static function sortIssues (string $id, array $issues) {
+            //init vars
+            $sorted = array();
+
+            //collect the open tickets assigned to a user
+            foreach ($issues as $issue) {
+                if ($issue["user_id"] == $id && $issue["status"] == "OPEN") {
+                    array_push($sorted, $issue);
+                }
+            }
+
+            //collect the rest of the open tickets
+            foreach ($issues as $issue) {
+                if ($issue["status"] == "OPEN" && $issue["user_id"] == null) {
+                    array_push($sorted, $issue);
+                }
+            }
+
+            //collect the closed issues
+            foreach ($issues as $issue) {
+                if ($issue["status"] == "CLOSED") {
+                    array_push($sorted, $issue);
+                }
+            }
+
+            //return the sorted issues
+            return $sorted;
         }
     }
 ?>
