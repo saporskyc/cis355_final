@@ -139,7 +139,7 @@
             //init vars
             $sorted = array();
 
-            //collect the open tickets assigned to a user
+            //collect the open tickets assigned to passed in user
             foreach ($issues as $issue) {
                 if ($issue["user_id"] == $id && $issue["status"] == "OPEN") {
                     array_push($sorted, $issue);
@@ -148,7 +148,7 @@
 
             //collect the rest of the open tickets
             foreach ($issues as $issue) {
-                if ($issue["status"] == "OPEN" && $issue["user_id"] == null) {
+                if ($issue["user_id"] != $id && $issue["status"] == "OPEN") {
                     array_push($sorted, $issue);
                 }
             }
