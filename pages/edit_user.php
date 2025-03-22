@@ -123,37 +123,35 @@
 <html lang=en>
     <!-- page body -->
     <div style="text-align: center;">
-        <!-- login form -->
+        <!-- input form -->
         <form action="<?php  $is_admin ? 'edit_user.php?editing_id=' . $_GET["editing_id"] : 'edit_user.php'; ?>" method="post">
-            <!-- email and password fields -->
-            <label for="email">
-                Email: 
-            </label>
+            <!-- user information fields -->
+            <!-- email -->
+            <label for="email">Email: </label>
             <input type="text" style="padding-top: 5px;" id="email" name="entered_email" placeholder=<?php echo '"' . $user["email"] . '"' ?>><br>
             <br>
-            <label for="pass">
-                Password: 
-            </label>
+
+            <!-- password -->
+            <label for="pass">Password: </label>
             <input type="password" style="padding-top: 5px;" id="pass" name="entered_pass" placeholder="***********"><br>
             <br>
-            <label for="fname">
-                First Name: 
-            </label>
+
+            <!-- first name -->
+            <label for="fname">First Name: </label>
             <input type="text" style="padding-top: 5px;" id="fname" name="entered_fname" placeholder=<?php echo '"' . $user["f_name"] . '"' ?>><br>
             <br>
-            <label for="lname">
-                Last Name: 
-            </label>
+
+            <!-- last name -->
+            <label for="lname">Last Name: </label>
             <input type="text" style="padding-top: 5px;" id="lname" name="entered_lname" placeholder=<?php echo '"' . $user["l_name"] . '"' ?>><br>
             <br>
 
             <!-- only display admin field if the user came from user management and is an admin -->
+            <!-- admin -->
             <?php if ($is_admin) { ?>
-            <label for="admin">
-                Admin User: 
-            </label>
-            <input type="text" style="padding-top: 5px;" id="admin" name="entered_admin" placeholder=<?php echo '"' . $user["admin"] . '"' ?>><br>
-            <br>
+                <label for="admin">Admin User: </label>
+                <input type="text" style="padding-top: 5px;" id="admin" name="entered_admin" placeholder=<?php echo '"' . $user["admin"] . '"' ?>><br>
+                <br>
             <?php }?>
 
             <!-- confirm button -->
@@ -167,7 +165,7 @@
                     Cancel
                 </button>
             <?php } else { ?>
-                <!-- home button -->
+                <!-- home button, displays if arrived via my profile button -->
                 <button name="home" value="true" type="submit">
                     Home
                 </button>

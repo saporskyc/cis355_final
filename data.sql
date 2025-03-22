@@ -22,13 +22,13 @@ CREATE TABLE `users` (
 CREATE TABLE `issues` (
     `issue_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11),
-    `organization` varchar(255),
-    `s_descr` varchar(255),
+    `organization` varchar(255) NOT NULL,
+    `s_descr` varchar(255) NOT NULL,
     `l_descr` text,
-    `open_date` date NOT NULL,
+    `open_date` date NOT NULL DEFAULT CURRENT_DATE,
     `close_date` date DEFAULT NULL,
     `priority` varchar(255) NOT NULL,
-    `status` varchar(255) NOT NULL,
+    `status` varchar(255) DEFAULT 'OPEN',
     Primary Key (`issue_id`)
 );
 

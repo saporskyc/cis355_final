@@ -65,7 +65,7 @@
             <?php } ?>
 
             <!-- new issue button -->
-            <form style="display: inline;" action="">
+            <form style="display: inline;" action="new_issue.php">
                 <button type="submit">
                     New Issue
                 </button>

@@ -48,17 +48,22 @@
         }
 
         //create a new issue
-        public static function newIssue (string $s_descr, string $l_descr, string $priority, string $status, string $org, string $project) {
+        public static function newIssue (string $assigned_user, string $org, string $s_descr, string $l_descr, string $priority) {
             //set query and connect to database
-            $qry = "INSERT INTO issues (s_desrc, l_desrc, open_date, priority, status, org, project)
-                    VALUES ($s_descr, $l_descr, (SELECT CURRENT_DATE()), $priority, $status, $org, $status)";
+            $qry = "INSERT INTO issues (user_id, organization, s_descr, l_descr, priority)
+                    VALUES ('$assigned_user', '$org', '$s_descr', '$l_descr', '$priority');";
             $pdo = Database::connect();
 
-            //execute query
-            $pdo->query(array($qry));
-
-            //disconnect
-            Database::disconnect();
+            //execute query, disconnect, return true or false based on success
+            try{
+                $pdo->query($qry);
+                Database::disconnect();
+                return true;
+            } catch (PDOException $e) {
+                Database::disconnect();
+                echo $e->getMessage() . "<br>";
+                return false;
+            };
         }
 
         //delete an existing issue and its comments by issue id
@@ -130,7 +135,7 @@
         /*
             method to sort an array of issues
             hierarchy is:
-                assigned to passed in user - open
+                assigned to passed in user + open
                 open
                 closed
             will not be viable for a large number of issues

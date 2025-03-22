@@ -95,16 +95,26 @@
 <html lang=en>
     <!-- page body -->
     <div style="text-align: center;">
-        <!-- login form -->
+        <!-- input form -->
         <form action="new_user.php" method="post">
-            <!-- email and password fields -->
-            <input type="text" style="padding-top: 5px;" name="entered_email" placeholder="Email"><br>
+            <!-- email -->
+            <label for="email">Email: </label>
+            <input id="email" type="text" style="padding-top: 5px;" name="entered_email" placeholder="abcefg@outlook.com"><br>
             <br>
-            <input type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
+
+            <!-- password -->
+            <label for="password">Password: </label>
+            <input id="password" type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
             <br>
-            <input type="text" style="padding-top: 5px;" name="entered_fname" placeholder="First Name"><br>
+
+            <!-- first name -->
+            <label for="fname">First Name: </label>
+            <input id="fname" type="text" style="padding-top: 5px;" name="entered_fname" placeholder="John"><br>
             <br>
-            <input type="text" style="padding-top: 5px;" name="entered_lname" placeholder="Last Name"><br>
+
+            <!-- last name -->
+            <label id="lname" for="email">Last Name: </label>
+            <input id="lname" type="text" style="padding-top: 5px;" name="entered_lname" placeholder="Doe"><br>
             <br>
 
             <!-- confirm button -->

@@ -86,9 +86,13 @@
                 foreach ($users as $user) {
                     echo '<tr style="text-align: center;">';
                         if ($interval != $last_user) {
+                            //full name
                             echo '<td style="border-bottom: 1px solid black;">' . trim($user["f_name"]) . " " . trim($user["l_name"]) . "</td>";
+                            //admin
                             echo '<td style="border-bottom: 1px solid black;">' . trim($user["admin"]) . "</td>";
+                            //email
                             echo '<td style="border-bottom: 1px solid black;">' . trim($user["email"]) . "</td>";
+                            //edit and delete buttons
                             echo '<td style="border-bottom: 1px solid black;">' .
                                     '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
                                         '<button name="editing_id" value="' . $user["user_id"] . '">' .
@@ -102,9 +106,13 @@
                                     '</form>' .
                                  "</td>";
                         } else {
+                            //full name
                             echo "<td>" . trim($user["f_name"]) . " " . trim($user["l_name"]) . "</td>";
+                            //admin
                             echo "<td>" . trim($user["admin"]) . "</td>";
+                            //email
                             echo "<td>" . trim($user["email"]) . "</td>";
+                            //edit and delete buttons
                             echo "<td>" .
                                     '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
                                         '<button name="editing_id" value="' . $user["user_id"] . '">' .
