@@ -112,8 +112,8 @@
                             echo '<td style="border-bottom: 1px solid black;">' . trim($issue["priority"]) . "</td>";
                             echo '<td style="border-bottom: 1px solid black;">' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
                             echo '<td style="border-bottom: 1px solid black;">' .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
-                                        '<button name="editing_id" value="' . $user["user_id"] . '">' .
+                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?editing_id=' . $issue["issue_id"] .'">' .
+                                        '<button name="editing_id" value="' . $issue["issue_id"] . '">' .
                                             'Manage' .
                                         '</button>' .
                                     '</form>' .
@@ -126,8 +126,8 @@
                             echo '<td>' . trim($issue["priority"]) . "</td>";
                             echo '<td>' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
                             echo '<td>' .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
-                                        '<button name="editing_id" value="' . $user["user_id"] . '">' .
+                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?editing_id=' . $issue["issue_id"] .'">' .
+                                        '<button name="editing_id" value="' . $issue["issue_id"] . '">' .
                                             'Manage' .
                                         '</button>' .
                                     '</form>' .

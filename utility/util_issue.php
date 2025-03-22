@@ -30,11 +30,10 @@
         //pull one issue, its comments, and the users who left the comments
         public static function getOne (string $id) {
             //set query and connect to database
-            $qry = "SELECT issues.*, comments.comment, users.f_name, users.l_name
+            $qry = "SELECT issues.*, users.user_id, users.f_name, users.l_name
                     FROM issues
-                    LEFT JOIN comments ON comments.comment_id = issues.issue_id
-                    LEFT JOIN users ON users.user_id = comments.comment_id
-                    WHERE issues.issue_id = $id";
+                    LEFT JOIN users ON users.user_id = issues.user_id
+                    WHERE issues.issue_id = '$id'";
             $pdo = Database::connect();
 
             //execute query, convert data to array

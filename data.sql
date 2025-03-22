@@ -24,7 +24,7 @@ CREATE TABLE `issues` (
     `user_id` int(11),
     `organization` varchar(255) NOT NULL,
     `s_descr` varchar(255) NOT NULL,
-    `l_descr` text,
+    `l_descr` text DEFAULT NULL,
     `open_date` date NOT NULL DEFAULT CURRENT_DATE,
     `close_date` date DEFAULT NULL,
     `priority` varchar(255) NOT NULL,

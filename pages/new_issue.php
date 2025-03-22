@@ -97,7 +97,7 @@
 
             <!-- priority dropdown -->
             <label for="priority">Priority: </label>
-            <select id="priority" type="text" style="text-align: center; display: inline;" name="priority">
+            <select id="priority" type="text" style="text-align: center;" name="priority">
                 <?php
                     //insert default value for dropdown
                     echo '<option value=""></option>';
