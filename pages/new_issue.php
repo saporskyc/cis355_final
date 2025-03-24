@@ -55,18 +55,18 @@
             $priority_error = true;
         }
 
-        //check whether or not to proceed with user add
+        //check whether or not to proceed with issue add
         if ($proceed) {
             //add new issue
-            $success = IssueUtility::newIssue($_POST["assigned"], $_POST["org"], $_POST["descr1"], $_POST["descr2"], $_POST["priority"]);
+            $new_id = IssueUtility::newIssue($_POST["assigned"], $_POST["org"], $_POST["descr1"], $_POST["descr2"], $_POST["priority"]);
             
             //check operation result
-            if ($success != false) {
+            if (!empty($new_id) && $new_id != false) {
                 //clear post
                 $_POST = array();
 
                 //redirect to edit_issue.php
-                header('Location: edit_issue.php');
+                header('Location: edit_issue.php?editing_id=' . $new_id["LAST_INSERT_ID()"]);
             }
         }
     }
@@ -92,7 +92,7 @@
             <br>
  
             <!-- long description -->
-            <textarea id="descr2" style="padding-top: 5px;" rows="8" cols="35" name="descr2" placeholder="More Details"></textarea><br>
+            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details"></textarea><br>
             <br>
 
             <!-- priority dropdown -->

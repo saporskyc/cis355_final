@@ -36,53 +36,71 @@
         header('Location: home.php');
     }
 
+    //get the issue by id
+    $issue = IssueUtility::getOne($_GET["editing_id"]);
+
     //check for values in post
     if (!empty($_POST)) {
         //init validation vars
-        $proceed = true;
-        $org_error = false;
-        $descr_error = false;
-        $priority_error = false;
+        $edits = array();
+        $update = true;
+        $org_error = false;         //these three are the only required fields that accept input
+        $descr_error = false;       //in the form of user-entered text
+        $priority_error = false;    //
 
-        //check organization field for input
-        if (empty($_POST["org"])) {
-            $proceed = false;
-            $org_error = true;
+        //check organization field for modified input
+        if (trim($_POST["org"]) != trim($issue["organization"])) {
+            array_push($edits, $_POST["org"]);
+            $update = true;
         }
 
-        //check descr1/s_descr for real input
-        if (empty($_POST["descr1"])) {
-            $proceed = false;
-            $descr_error = true;
+        //check descr1/s_descr for modified input
+        if (trim($_POST["descr1"]) != trim($issue["s_descr"])) {
+            array_push($edits, $_POST["descr1"]);
+            $update = true;
         }
 
-        //check priority for real input
-        if (empty($_POST["priority"])) {
-            $proceed = false;
-            $priority_error = true;
+        //check descr2/l_descr for modified input
+        if (trim($_POST["descr2"]) != trim($issue["l_descr"])) {
+            array_push($edits, $_POST["descr2"]);
+            $update = true;
         }
 
-        //check whether or not to proceed with user add
-        if ($proceed) {
-            //add new issue
-            $success = IssueUtility::newIssue($_POST["assigned"], $_POST["org"], $_POST["descr1"], $_POST["descr2"], $_POST["priority"]);
+        //check status for modified input
+        if (trim($_POST["status"]) != trim($issue["status"])) {
+            array_push($edits, $_POST["descr2"]);
+            $update = true;
+        }
+
+        //check priority for modified input
+        if (trim($_POST["priority"]) != trim($issue["priority"])) {
+            array_push($edits, $_POST["priority"]);
+            $update = true;
+        }
+
+        //check assigned user for modified input
+        if (trim($_POST["assigned"]) != trim($issue["user_id"])) {
+            array_push($edits, $_POST["assigned"]);
+            $update = true;
+        }
+
+        //check whether or not to proceed with update
+        if ($update) {
+            //update the issue
+            $success = IssueUtility::updateIssue($_GET["editing_id"], $edits);
             
             //check operation result
             if ($success != false) {
-                //clear post
-                $_POST = array();
-
-                //redirect to edit_issue.php
-                header('Location: edit_issue.php');
+                //pull the issue again to refresh the information
+                $issue = IssueUtility::getOne($_GET["editing_id"]);
             }
         }
     }
 
-    //get the issue by id
-    $issue = IssueUtility::getOne($_GET["editing_id"]);
-
-    //check the current issue status is and set a variable to the other option
+    //check what the current issue status is and set a variable to the other option
     $status2 = $issue["status"] == "OPEN" ? "CLOSED" : "OPEN";
+
+    //pull the issue's associated comments
 ?>
 
 <!DOCTYPE html>
@@ -130,7 +148,7 @@
                 ?>
             </select>
             
-            <!-- assigned user dropdown, only display the currently assigned user unless being viewed by an admin -->
+            <!-- assigned user dropdown, only display the issue's assigned user unless being viewed by an admin -->
             <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
             <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned" <?php echo $admin ? "" : 'disabled="true"' ?>>
                 <?php
@@ -191,5 +209,7 @@
                 </button>
             <?php } ?>
         </form>
+
+        <!-- comment display section -->
     </div>
 </html>
