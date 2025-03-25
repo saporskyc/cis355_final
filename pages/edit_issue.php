@@ -31,8 +31,20 @@
 
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
-        //clear post, redirect to home page
+        //clear post and get, redirect to home page
         $_POST = array();
+        $_GET = array();
+        header('Location: home.php');
+    }
+
+    //check if delete was clicked
+    if (isset($_POST["delete"])) {
+        //delete the issue
+        IssueUtility::deleteIssue($_GET["editing_id"]);
+
+        //clear post and get, redirect to home page
+        $_POST = array();
+        $_GET = array();
         header('Location: home.php');
     }
 
@@ -50,37 +62,37 @@
 
         //check organization field for modified input
         if (trim($_POST["org"]) != trim($issue["organization"])) {
-            array_push($edits, $_POST["org"]);
+            $edits["org"] = $_POST["org"];
             $update = true;
         }
 
         //check descr1/s_descr for modified input
         if (trim($_POST["descr1"]) != trim($issue["s_descr"])) {
-            array_push($edits, $_POST["descr1"]);
+            $edits["descr1"] = $_POST["descr1"];
             $update = true;
         }
 
         //check descr2/l_descr for modified input
         if (trim($_POST["descr2"]) != trim($issue["l_descr"])) {
-            array_push($edits, $_POST["descr2"]);
+            $edits["descr2"] = $_POST["descr2"];
             $update = true;
         }
 
         //check status for modified input
         if (trim($_POST["status"]) != trim($issue["status"])) {
-            array_push($edits, $_POST["descr2"]);
+            $edits["status"] = $_POST["status"];
             $update = true;
         }
 
         //check priority for modified input
         if (trim($_POST["priority"]) != trim($issue["priority"])) {
-            array_push($edits, $_POST["priority"]);
+            $edits["priority"] = $_POST["priority"];
             $update = true;
         }
 
         //check assigned user for modified input
         if (trim($_POST["assigned"]) != trim($issue["user_id"])) {
-            array_push($edits, $_POST["assigned"]);
+            $edits["assigned"] = $_POST["assigned"];
             $update = true;
         }
 
@@ -90,7 +102,10 @@
             $success = IssueUtility::updateIssue($_GET["editing_id"], $edits);
             
             //check operation result
-            if ($success != false) {
+            if ($success) {
+                //clear post
+                $_POST = array();
+
                 //pull the issue again to refresh the information
                 $issue = IssueUtility::getOne($_GET["editing_id"]);
             }
@@ -108,7 +123,7 @@
     <!-- page body -->
     <div style="text-align: center;">
         <!-- issue information form -->
-        <form action="new_issue.php" method="post">
+        <form action= <?php echo '"edit_issue.php?editing_id=' . $_GET["editing_id"] . '"'; ?> method="post">
             <!-- organization -->
             <label for="org">Organization: </label>
             <input id="org" type="text" style="padding-top: 5px;" name="org" value=" <?php echo $issue["organization"]; ?> "><br>
@@ -120,9 +135,7 @@
             <br>
  
             <!-- long description -->
-            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" <?php if (empty($issue["l_descr"])) { echo 'placeholder="More Details"';} ?>>
-            <?php if (!empty($issue["l_descr"])) { echo trim($issue["l_descr"]);} ?>
-            </textarea><br>
+            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details"><?php if ($issue["l_descr"] != null) { echo trim($issue["l_descr"]); } ?></textarea><br>
             <br>
 
             <!-- status -->
@@ -152,14 +165,18 @@
             <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
             <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned" <?php echo $admin ? "" : 'disabled="true"' ?>>
                 <?php
-                    //if there is an assigned user, display them
+                    //check for an assigned user
                     if (!empty($issue["user_id"])) {
+                        //display the assigned user
                         echo '<option value=' . $issue["user_id"] . '>' .
                              trim($issue["f_name"]) . ' ' . trim($issue["l_name"]) .
                              '</option>';
+                        
+                        //insert default value for dropdown
+                        echo '<option value="NULL">Unassigned</option>';
                     } else {
                         //insert default value for dropdown
-                        echo '<option value=""></option>';
+                        echo '<option value="NULL">Unassigned</option>';
                     }
 
                     //check if the user is an admin

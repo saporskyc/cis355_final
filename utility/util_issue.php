@@ -80,12 +80,16 @@
             $delComments = "DELETE FROM comments WHERE comments.issue_id = $id";
             $pdo = Database::connect();
             
-            //execute deletions
-            $pdo->query($delIssue);
-            $pdo->query($delComments);
-
-            //disconnect
-            Database::disconnect();
+            try {
+                //execute deletions, disconnect from database
+                $pdo->query($delIssue);
+                $pdo->query($delComments);
+                Database::disconnect();
+            } catch (PDOException $e) {
+                //an error occurred. disconnect from database, display error, return false
+                Database::disconnect();
+                echo $e->getMessage() . "<br>";
+            }
         }
 
         //update an existing issue
@@ -99,7 +103,7 @@
             $existingRec = $data->fetch(PDO::FETCH_ASSOC);
 
             //check if an existing record was found
-            if ($existingRec != false) {
+            if ($existingRec != null && $existingRec != false) {
                 //initiliaze update query and variable determining whether update is necessary
                 $qry = "UPDATE issues SET";
                 $update = false;
@@ -181,15 +185,20 @@
                 //check for need to update
                 if ($update) {
                     //finalize query
-                    $qry = $qry . " WHERE issues.issue_id = '$id'";
+                    $qry = $qry . " WHERE issues.issue_id = $id";
 
-                    //execute
-                    $pdo->execute($qry);
+                    //execute the query, return true or false based on success
+                    try {
+                        $pdo->query($qry);
+                        Database::disconnect();
+                        return true;
+                    } catch (PDOException $e) {
+                        Database::disconnect();
+                        echo $e->getMessage() . "<br>";
+                        return false;
+                    }
                 }
             }
-
-            //disconnect
-            Database::disconnect();
         }
 
         /*

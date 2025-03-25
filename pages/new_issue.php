@@ -114,7 +114,7 @@
             <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned">
                 <?php
                     //insert default value for dropdown
-                    echo '<option value=""></option>';
+                    echo '<option value="">Unassigned</option>';
 
                     //loop over existing users and populate the dropdown
                     foreach ($users as $user) {
