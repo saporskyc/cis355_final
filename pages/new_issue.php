@@ -66,7 +66,7 @@
                 $_POST = array();
 
                 //redirect to edit_issue.php
-                header('Location: edit_issue.php?editing_id=' . $new_id["LAST_INSERT_ID()"]);
+                header('Location: edit_issue.php?id=' . $new_id["LAST_INSERT_ID()"]);
             }
         }
     }

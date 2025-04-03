@@ -40,7 +40,7 @@
     //check if delete was clicked
     if (isset($_POST["delete"])) {
         //delete the issue
-        IssueUtility::deleteIssue($_GET["editing_id"]);
+        IssueUtility::deleteIssue($_GET["id"]);
 
         //clear post and get, redirect to home page
         $_POST = array();
@@ -48,8 +48,17 @@
         header('Location: home.php');
     }
 
+    //check if post_comment was clicked
+    if (isset($_POST["post_comment"])) {
+        //add the new comment
+        CommentUtility::newComment($_GET["id"], $_SESSION["user_id"], $_POST["new_comment"]);
+
+        //clear post
+        $_POST = array();
+    }
+
     //get the issue by id
-    $issue = IssueUtility::getOne($_GET["editing_id"]);
+    $issue = IssueUtility::getOne($_GET["id"]);
 
     //check for values in post
     if (!empty($_POST)) {
@@ -99,15 +108,15 @@
         //check whether or not to proceed with update
         if ($update) {
             //update the issue
-            $success = IssueUtility::updateIssue($_GET["editing_id"], $edits);
+            $success = IssueUtility::updateIssue($_GET["id"], $edits);
             
             //check operation result
             if ($success) {
                 //clear post
                 $_POST = array();
 
-                //pull the issue again to refresh the information
-                $issue = IssueUtility::getOne($_GET["editing_id"]);
+                //pull the issue with updated information
+                $issue = IssueUtility::getOne($_GET["id"]);
             }
         }
     }
@@ -116,6 +125,7 @@
     $status2 = $issue["status"] == "OPEN" ? "CLOSED" : "OPEN";
 
     //pull the issue's associated comments
+    $comments = CommentUtility::getAssociated($_GET["id"]);
 ?>
 
 <!DOCTYPE html>
@@ -123,7 +133,7 @@
     <!-- page body -->
     <div style="text-align: center;">
         <!-- issue information form -->
-        <form action= <?php echo '"edit_issue.php?editing_id=' . $_GET["editing_id"] . '"'; ?> method="post">
+        <form action= <?php echo '"edit_issue.php?id=' . $_GET["id"] . '"'; ?> method="post">
             <!-- organization -->
             <label for="org">Organization: </label>
             <input id="org" type="text" style="padding-top: 5px;" name="org" value=" <?php echo $issue["organization"]; ?> "><br>
@@ -226,7 +236,29 @@
                 </button>
             <?php } ?>
         </form>
+        <br>
 
-        <!-- comment display section -->
+        <!-- comment form -->
+        <form action= <?php echo '"edit_issue.php?id=' . $_GET["id"] . '"'; ?> method="post">
+            <!-- loop through existing comments and display them -->
+            <?php
+                foreach ($comments as $comment) {
+                    echo $comment["f_name"] . ' ' . $comment["l_name"] . ' -- ' . $comment["posted_date"] . '<br>';
+                    echo $comment["comment"] . '<br>';
+                    echo '<br>';
+                }
+            ?>
+
+            <!-- new comment text area, only display this if issue status is open -->
+            <?php if ($issue["status"] == "OPEN") { ?>
+                <textarea id="new_comment" style="width: 625px; height: 115px;" rows="8" cols="35" name="new_comment" placeholder="New Comment"></textarea><br>
+                <br>
+
+                <!-- post comment button -->
+                <button id="post_comment" name="post_comment" value="true" type="submit">
+                    Post
+                </button>
+            <?php } ?>
+        </form>
     </div>
 </html>

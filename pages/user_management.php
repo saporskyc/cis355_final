@@ -67,7 +67,7 @@
         <h3> </h3>
 
         <!-- users table -->
-        <table style="border: 1px solid black; width: 60%; margin: 0px auto;">
+        <table style="border: 1px solid black; width: 60%; margin: 0px auto; border-collapse: collapse">
             <!-- column names -->
             <thead>
                 <tr>
@@ -83,49 +83,29 @@
                 //loop over all users and populate table with data
                 $last_user = array_key_last($users);
                 $interval = 0;
+                $bg_style = '';
                 foreach ($users as $user) {
-                    echo '<tr style="text-align: center;">';
-                        if ($interval != $last_user) {
-                            //full name
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($user["f_name"]) . " " . trim($user["l_name"]) . "</td>";
-                            //admin
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($user["admin"]) . "</td>";
-                            //email
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($user["email"]) . "</td>";
-                            //edit and delete buttons
-                            echo '<td style="border-bottom: 1px solid black;">' .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
-                                        '<button name="editing_id" value="' . $user["user_id"] . '">' .
-                                            'Edit' .
-                                        '</button>' .
-                                    '</form>' .
-                                    '<form style="display: inline;" method="POST" action="user_management.php">' .
-                                        '<button name="delete" value="' . $user["user_id"] . '">' .
-                                            'Delete' .
-                                        '</button>' .
-                                    '</form>' .
-                                 "</td>";
-                        } else {
-                            //full name
-                            echo "<td>" . trim($user["f_name"]) . " " . trim($user["l_name"]) . "</td>";
-                            //admin
-                            echo "<td>" . trim($user["admin"]) . "</td>";
-                            //email
-                            echo "<td>" . trim($user["email"]) . "</td>";
-                            //edit and delete buttons
-                            echo "<td>" .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?editing_id=' . $user["user_id"] .'">' .
-                                        '<button name="editing_id" value="' . $user["user_id"] . '">' .
-                                            'Edit' .
-                                        '</button>' .
-                                    '</form>' .
-                                    '<form style="display: inline;" method="POST" action="user_management.php">' .
-                                        '<button name="delete" value="' . $user["user_id"] . '">' .
-                                            'Delete' .
-                                        '</button>' .
-                                    '</form>' .
-                                 "</td>";
-                        }
+                    $interval % 2 != 0 ? $bg_style = 'background-color:rgb(191, 204, 204);' : $bg_style = '';
+                    echo '<tr style="text-align: center;'. $bg_style .'">';
+                        //full name
+                        echo '<td>' . trim($user["f_name"]) . " " . trim($user["l_name"]) . "</td>";
+                        //admin
+                        echo '<td>' . trim($user["admin"]) . "</td>";
+                        //email
+                        echo '<td>' . trim($user["email"]) . "</td>";
+                        //edit and delete buttons
+                        echo '<td>' .
+                                '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_user.php?id=' . $user["user_id"] .'">' .
+                                    '<button name="id" value="' . $user["user_id"] . '">' .
+                                        'Edit' .
+                                    '</button>' .
+                                '</form>' .
+                                '<form style="display: inline;" method="POST" action="user_management.php">' .
+                                    '<button name="delete" value="' . $user["user_id"] . '">' .
+                                        'Delete' .
+                                    '</button>' .
+                                '</form>' .
+                             '</td>';
                     echo "<tr>";
                     $interval++;
                 }

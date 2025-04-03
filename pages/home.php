@@ -83,7 +83,7 @@
          <h3> </h3>
 
         <!-- issues display -->
-        <table style="border: 1px solid black; width: 60%; margin: 0px auto;">
+        <table style="border: 1px solid black; width: 60%; margin: 0px auto; border-collapse: collapse;">
             <!-- column names -->
             <thead>
                 <tr>
@@ -99,40 +99,33 @@
 
             <!-- rows -->
             <?php
-                //loop over all users and populate table with data
+                //loop over all issues and populate table with data
                 $num_issues = count($issues);
                 $iteration = 1;
+                $bg_style = '';
                 foreach ($issues as $issue) {
-                    echo '<tr style="text-align: center;">';
-                        if ($iteration != $num_issues) {
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["organization"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["s_descr"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["open_date"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["status"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["priority"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
-                            echo '<td style="border-bottom: 1px solid black;">' .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?editing_id=' . $issue["issue_id"] .'">' .
-                                        '<button name="editing_id" value="' . $issue["issue_id"] . '">' .
-                                            'Manage' .
-                                        '</button>' .
-                                    '</form>' .
-                                 "</td>";
-                        } else {
-                            echo '<td>' . trim($issue["organization"]) . "</td>";
-                            echo '<td>' . trim($issue["s_descr"]) . "</td>";
-                            echo '<td>' . trim($issue["open_date"]) . "</td>";
-                            echo '<td>' . trim($issue["status"]) . "</td>";
-                            echo '<td>' . trim($issue["priority"]) . "</td>";
-                            echo '<td>' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
-                            echo '<td>' .
-                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?editing_id=' . $issue["issue_id"] .'">' .
-                                        '<button name="editing_id" value="' . $issue["issue_id"] . '">' .
-                                            'Manage' .
-                                        '</button>' .
-                                    '</form>' .
-                                 "</td>";
-                        }
+                    $iteration % 2 == 0 ? $bg_style = 'background-color:rgb(191, 204, 204);' : $bg_style = '';
+                    echo '<tr style="text-align: center;'. $bg_style .'">';
+                        //organization
+                        echo '<td>' . trim($issue["organization"]) . "</td>";
+                        //short description
+                        echo '<td>' . trim($issue["s_descr"]) . "</td>";
+                        //open date
+                        echo '<td>' . trim($issue["open_date"]) . "</td>";
+                        //status
+                        echo '<td>' . trim($issue["status"]) . "</td>";
+                        //priority
+                        echo '<td>' . trim($issue["priority"]) . "</td>";
+                        //full name
+                        echo '<td>' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
+                        //manage button
+                        echo '<td>' .
+                                '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?id=' . $issue["issue_id"] .'">' .
+                                    '<button name="id" value="' . $issue["issue_id"] . '">' .
+                                        'Manage' .
+                                    '</button>' .
+                                '</form>' .
+                             '</td>';
                     echo "<tr>";
                     $iteration++;
                 }

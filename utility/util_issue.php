@@ -12,7 +12,6 @@
         //pull all issues
         public static function getAll () {
             //set query and connect to database
-            // $qry = "SELECT * FROM issues";
             $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
                     LEFT JOIN users ON users.user_id = issues.user_id";
             $pdo = Database::connect();

@@ -36,7 +36,7 @@
 
     //check if admin user
     $is_admin = false;
-    if(isset($_GET["editing_id"]) && !empty($_GET["editing_id"]) && $_SESSION["admin"] == "Y") {
+    if(isset($_GET["id"]) && !empty($_GET["id"]) && $_SESSION["admin"] == "Y") {
         $is_admin = true;
     }
 
@@ -86,7 +86,7 @@
             //edit current user
             if($is_admin) {
                 //management performing edit
-                $success = UserUtility::updateUser($_GET["editing_id"], $edits);
+                $success = UserUtility::updateUser($_GET["id"], $edits);
             } else {
                 //editing my profile
                 $success = UserUtility::updateUser($_SESSION["user_id"], $edits);
@@ -100,7 +100,7 @@
                 //pull the user again to display changes
                 if($is_admin) {
                     //arrived through admin page
-                    $user = UserUtility::getOne($_GET["editing_id"]);
+                    $user = UserUtility::getOne($_GET["id"]);
                 } else {
                     //arrived through my profile button
                     $user = UserUtility::getOne($_SESSION["user_id"]);
@@ -111,7 +111,7 @@
         //make initial user pull
         if ($is_admin) {
             //arrived through admin page
-            $user = UserUtility::getOne($_GET["editing_id"]);
+            $user = UserUtility::getOne($_GET["id"]);
         } else {
             //arrived through my profile button
             $user = UserUtility::getOne($_SESSION["user_id"]);
@@ -124,7 +124,7 @@
     <!-- page body -->
     <div style="text-align: center;">
         <!-- input form -->
-        <form action="<?php  $is_admin ? 'edit_user.php?editing_id=' . $_GET["editing_id"] : 'edit_user.php'; ?>" method="post">
+        <form action="<?php  $is_admin ? 'edit_user.php?id=' . $_GET["id"] : 'edit_user.php'; ?>" method="post">
             <!-- user information fields -->
             <!-- email -->
             <label for="email">Email: </label>
