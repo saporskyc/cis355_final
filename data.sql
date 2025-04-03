@@ -10,10 +10,10 @@ DROP TABLE IF EXISTS `users`, `issues`, `comments`;
 -- create table persons
 CREATE TABLE `users` (
     `user_id` int(11) NOT NULL AUTO_INCREMENT,
-    `admin` varchar(255) DEFAULT "N",
-    `f_name` varchar(255) NOT NULL,
-    `l_name` varchar(255) NOT NULL,
-    `email` varchar(255) NOT NULL,
+    `admin` varchar(3) DEFAULT "N",
+    `f_name` varchar(50) NOT NULL,
+    `l_name` varchar(50) NOT NULL,
+    `email` varchar(50) NOT NULL,
     `password` varchar(255) NOT NULL,
     Primary Key (`user_id`)
 );
@@ -22,13 +22,13 @@ CREATE TABLE `users` (
 CREATE TABLE `issues` (
     `issue_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11),
-    `organization` varchar(255) NOT NULL,
-    `s_descr` varchar(255) NOT NULL,
+    `organization` varchar(35) NOT NULL,
+    `s_descr` varchar(60) NOT NULL,
     `l_descr` text DEFAULT NULL,
     `open_date` date NOT NULL DEFAULT CURRENT_DATE,
     `close_date` date DEFAULT NULL,
-    `priority` varchar(255) NOT NULL,
-    `status` varchar(255) DEFAULT 'OPEN',
+    `priority` varchar(5) NOT NULL,
+    `status` varchar(10) DEFAULT 'OPEN',
     Primary Key (`issue_id`)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE `comments` (
     `user_id` int(11) NOT NULL,
     `issue_id` int(11) NOT NULL,
     `comment` text,
-    `posted_date` datetime,
+    `posted_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Primary Key (`comment_id`)
 );
 
@@ -84,17 +84,16 @@ INSERT INTO `issues` (`issue_id`, `user_id`, `organization`, `s_descr`, `open_da
 
 
 -- comments
-    -- SELECT NOW() returns the datetime the statement executes at
-INSERT INTO `comments` (`user_id`, `issue_id`, `comment`, `posted_date`)
-    VALUES ("2", "1", "Unable to ping the provided IP. Please have the resident reboot their router and let me know when that is done so I can attempt again.", (SELECT NOW()));
-INSERT INTO `comments` (`user_id`, `issue_id`, `comment`, `posted_date`)
-    VALUES ("3", "1", "Contacted the resident, they have rebooted their router.", (SELECT NOW()));
-INSERT INTO `comments` (`user_id`, `issue_id`, `comment`, `posted_date`)
-    VALUES ("2", "1", "I am now able to ping the IP. Please have the resident test their internet again.", (SELECT NOW()));
-INSERT INTO `comments` (`user_id`, `issue_id`, `comment`, `posted_date`)
-    VALUES ("3", "1", "The resident confirmed their internet is back up.", (SELECT NOW()));
-INSERT INTO `comments` (`user_id`, `issue_id`, `comment`, `posted_date`)
-    VALUES ("2", "1", "Closing issue.", (SELECT NOW()));
+INSERT INTO `comments` (`user_id`, `issue_id`, `comment`)
+    VALUES ("2", "1", "Unable to ping the provided IP. Please have the resident reboot their router and let me know when that is done so I can attempt again.");
+INSERT INTO `comments` (`user_id`, `issue_id`, `comment`)
+    VALUES ("3", "1", "Contacted the resident, they have rebooted their router.");
+INSERT INTO `comments` (`user_id`, `issue_id`, `comment`)
+    VALUES ("2", "1", "I am now able to ping the IP. Please have the resident test their internet again.");
+INSERT INTO `comments` (`user_id`, `issue_id`, `comment`)
+    VALUES ("3", "1", "The resident confirmed their internet is back up.");
+INSERT INTO `comments` (`user_id`, `issue_id`, `comment`)
+    VALUES ("2", "1", "Closing issue.");
 
 -- execute
 COMMIT;
