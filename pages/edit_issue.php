@@ -23,12 +23,6 @@
         exit(0);
     }
 
-    //check if admin user
-    $admin = false;
-    if ($_SESSION["admin"] == "Y") {
-        $admin = true;
-    }
-
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
         //clear post and get, redirect to home page
@@ -59,6 +53,24 @@
 
     //get the issue by id
     $issue = IssueUtility::getOne($_GET["id"]);
+
+    //check if admin user
+    $admin = false;
+    if ($_SESSION["admin"] == "Y") {
+        $admin = true;
+    }
+
+    //check if the user is the one assigned to the issue
+    $my_issue = false;
+    if ($_SESSION["user_id"] == $issue["user_id"]) {
+        $my_issue = true;
+    }
+
+    //check whether or not to disable the input fields
+    $disable = false;
+    if ((!$admin && !$my_issue) || $issue["status"] == "CLOSED") {
+        $disable = true;
+    }
 
     //check for values in post
     if (!empty($_POST)) {
@@ -132,32 +144,32 @@
 <html lang=en>
     <!-- page body -->
     <div style="text-align: center;">
-        <!-- issue information form -->
+        <!-- issue information form, disable all fields unless the user is the one assigned or an admin -->
         <form action= <?php echo '"edit_issue.php?id=' . $_GET["id"] . '"'; ?> method="post">
             <!-- organization -->
             <label for="org">Organization: </label>
-            <input id="org" type="text" style="padding-top: 5px;" name="org" value=" <?php echo $issue["organization"]; ?> "><br>
+            <input id="org" type="text" style="padding-top: 5px;" name="org" value=" <?php echo $issue["organization"]; ?> " <?php if ($disable) {echo 'disabled="true"';} ?>><br>
             <br>
 
             <!-- short description -->
             <label for="descr1">Description: </label>
-            <input id="descr1" type="text" style="padding-top: 5px;" name="descr1" value=" <?php echo $issue["s_descr"]; ?> "><br>
+            <input id="descr1" type="text" style="padding-top: 5px;" name="descr1" value=" <?php echo $issue["s_descr"]; ?> " <?php if ($disable) {echo 'disabled="true"';} ?>><br>
             <br>
  
             <!-- long description -->
-            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details"><?php if ($issue["l_descr"] != null) { echo trim($issue["l_descr"]); } ?></textarea><br>
+            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details" <?php if ($disable) {echo 'disabled="true"';} ?>><?php if ($issue["l_descr"] != null) { echo trim($issue["l_descr"]); } ?></textarea><br>
             <br>
 
             <!-- status -->
             <label for="status">Status: </label>
-            <select id="status" type="text" style="padding-top: 5px;" name="status">
+            <select id="status" type="text" style="padding-top: 5px;" name="status" <?php if ($disable) {echo 'disabled="true"';} ?>>
                 <?php echo '<option value="' . $issue["status"] . '">' . $issue["status"] . '</option>' ?>
                 <?php echo '<option value="' . $status2 . '">' . $status2 . '</option>' ?>
             </select>
 
             <!-- priority dropdown -->
             <label for="priority" style="padding-left: 25px;">Priority: </label>
-            <select id="priority" type="text" style="text-align: center; display: inline;" name="priority">
+            <select id="priority" type="text" style="text-align: center; display: inline;" name="priority" <?php if ($disable) {echo 'disabled="true"';} ?>>
                 <?php
                     //insert current issue value as default
                     echo '<option value="' . $issue["priority"] . '">' . $issue["priority"] . '</option>';
@@ -171,9 +183,10 @@
                 ?>
             </select>
             
-            <!-- assigned user dropdown, only display the issue's assigned user unless being viewed by an admin -->
+            <!-- assigned user dropdown, only display the issue's assigned user if the issue is closed or the user is not an admin -->
             <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
-            <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned" <?php echo $admin ? "" : 'disabled="true"' ?>>
+            <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned"
+            <?php if (!$admin || $issue["status"] == 'CLOSED') {echo 'disabled="true"';} ?>>
                 <?php
                     //check for an assigned user
                     if (!empty($issue["user_id"])) {
@@ -220,17 +233,19 @@
             <br>
 
             <!-- confirm button -->
-            <button id="confirm_button" name="confirm" type="submit">
-                Confirm
-            </button>
+            <?php if (!$disable) { ?>
+                <button id="confirm_button" name="confirm" type="submit">
+                    Save Changes
+                </button>
+            <?php } ?>
 
             <!-- cancel button -->
             <button id="cancel_button" name="cancel" value="true" type="submit">
                 Cancel
             </button>
 
-            <!-- delete button, only display if it as admin user -->
-            <?php if ($admin) { ?>
+            <!-- delete button, only display if it as admin user and the issue is not closed -->
+            <?php if ($admin && $issue["status"] != 'CLOSED') { ?>
                 <button id="delete_button" name="delete" value="true" type="submit">
                     Delete
                 </button>

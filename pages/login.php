@@ -36,8 +36,9 @@
             $_POST = array();
             header('Location: home.php');
         } else {
-            //login failed, set error display values
+            //login failed, set error display values, destroy session
             echo "login failed";
+            session_destroy();
         }
     }
 ?>

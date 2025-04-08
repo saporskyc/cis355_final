@@ -22,6 +22,12 @@
         exit(0);
     }
 
+    //check if the user is an admin
+    $admin = false;
+    if ($_SESSION['admin'] == 'Y') {
+        $admin = true;
+    }
+
     //check if cancel was clicked
     if (isset($_POST["cancel"])) {
         //clear post, redirect to home page
@@ -57,8 +63,16 @@
 
         //check whether or not to proceed with issue add
         if ($proceed) {
+            //check whether or not to default assigned user
+            $assigned = '';
+            if ($admin) {
+                $assigned = $_POST["assigned"];
+            } else {
+                $assigned = $_SESSION["user_id"];
+            }
+
             //add new issue
-            $new_id = IssueUtility::newIssue($_POST["assigned"], $_POST["org"], $_POST["descr1"], $_POST["descr2"], $_POST["priority"]);
+            $new_id = IssueUtility::newIssue($assigned, $_POST["org"], $_POST["descr1"], $_POST["descr2"], $_POST["priority"]);
             
             //check operation result
             if (!empty($new_id) && $new_id != false) {
@@ -109,26 +123,29 @@
                 ?>
             </select>
             
-            <!-- assigned user dropdown -->
-            <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
-            <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned">
-                <?php
-                    //insert default value for dropdown
-                    echo '<option value="">Unassigned</option>';
+            <!-- assigned user dropdown, only display if the user is an admin, otherwise default this to the user creating the issue -->
+            <?php if ($admin) { ?>
+                <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
+                <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned">
+                    <?php
+                        //insert default value for dropdown
+                        echo '<option value="">Unassigned</option>';
 
-                    //loop over existing users and populate the dropdown
-                    foreach ($users as $user) {
-                        echo '<option value=' . $user["user_id"] . '>' .
-                             trim($user["f_name"]) . ' ' . trim($user["l_name"]) .
-                             '</option>';
-                    }
-                ?>
-            </select><br>
+                        //loop over existing users and populate the dropdown
+                        foreach ($users as $user) {
+                            echo '<option value=' . $user["user_id"] . '>' .
+                                trim($user["f_name"]) . ' ' . trim($user["l_name"]) .
+                                '</option>';
+                        }
+                    ?>
+                </select><br>
+            <?php } ?>
+            <br>
             <br>
 
             <!-- confirm button -->
             <button id="confirm_button" name="confirm" type="submit">
-                Confirm
+                Create
             </button>
 
             <!-- cancel button -->
