@@ -13,7 +13,8 @@
         public static function getAll () {
             //set query and connect to database
             $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
-                    LEFT JOIN users ON users.user_id = issues.user_id";
+                    LEFT JOIN users ON users.user_id = issues.user_id
+                    ORDER BY issues.priority";
             $pdo = Database::connect();
 
             //run query, convert data into array
