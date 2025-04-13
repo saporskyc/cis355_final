@@ -49,7 +49,7 @@
         $edits = array();
 
         //check email field for input
-        if (!empty($_POST["entered_email"])) {
+        if (trim($_POST["entered_email"]) != "") {
             //make sure it is of form email
             if (filter_var($_POST["entered_email"], FILTER_VALIDATE_EMAIL)) {
                 $edits["entered_email"] = $_POST["entered_email"];
@@ -58,25 +58,25 @@
         }
 
         //check password for real input
-        if (!empty($_POST["entered_pass"])) {
+        if (trim($_POST["entered_pass"]) != "") {
             $edits["entered_pass"] = $_POST["entered_pass"];
             $proceed = true;
         }
 
         //check fname for real input
-        if (!empty($_POST["entered_fname"])) {
+        if (trim($_POST["entered_fname"]) != "") {
             $edits["entered_fname"] = $_POST["entered_fname"];
             $proceed = true;
         }
 
         //check lname for real input
-        if (!empty($_POST["entered_lname"])) {
+        if (trim($_POST["entered_lname"]) == "") {
             $edits["entered_lname"] = $_POST["entered_lname"];
             $proceed = true;
         }
 
         //check lname for real input
-        if (!empty($_POST["entered_admin"])) {
+        if (trim($_POST["entered_admin"]) == "") {
             $edits["entered_admin"] = $_POST["entered_admin"];
             $proceed = true;
         }

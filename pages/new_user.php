@@ -48,7 +48,7 @@
         $proceed = true;
 
         //check email field for input
-        if (!empty($_POST["entered_email"])) {
+        if (trim($_POST["entered_email"]) != "") {
             //make sure it is of form email
             if (!filter_var($_POST["entered_email"], FILTER_VALIDATE_EMAIL)) {
                 $proceed = false;
@@ -57,19 +57,19 @@
         }
 
         //check password for real input
-        if (empty($_POST["entered_pass"])) {
+        if (trim($_POST["entered_pass"]) == "") {
             $proceed = false;
             $password_error = true;
         }
 
         //check fname for real input
-        if (empty($_POST["entered_fname"])) {
+        if (trim($_POST["entered_fname"]) == "") {
             $proceed = false;
             $fname_error = true;
         }
 
         //check lname for real input
-        if (empty($_POST["entered_lname"])) {
+        if (trim($_POST["entered_lname"]) == "") {
             $proceed = false;
             $lname_error = true;
         }
