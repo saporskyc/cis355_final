@@ -43,9 +43,15 @@
     }
 
     //check if post_comment was clicked
+    $comment_error = false;
     if (isset($_POST["post_comment"])) {
-        //add the new comment
-        CommentUtility::newComment($_GET["id"], $_SESSION["user_id"], $_POST["new_comment"]);
+        if (trim($_POST["new_comment"]) == "") {
+            //invalid input received for new_comment
+            $comment_error = true;
+        } else {
+            //add the new comment
+            CommentUtility::newComment($_GET["id"], $_SESSION["user_id"], $_POST["new_comment"]);
+        }
 
         //clear post
         $_POST = array();
@@ -72,25 +78,34 @@
         $disable = true;
     }
 
-    //check for values in post
+    //input validation vars, these are the only two required fields that accept user text input
+    $org_error = false;
+    $descr_error = false;
     if (!empty($_POST)) {
-        //init validation vars
+        //init operation vars
         $edits = array();
         $update = true;
-        $org_error = false;         //these three are the only required fields that accept input
-        $descr_error = false;       //in the form of user-entered text
-        $priority_error = false;    //
 
         //check organization field for modified input
         if (trim($_POST["org"]) != trim($issue["organization"])) {
-            $edits["org"] = $_POST["org"];
-            $update = true;
+            if (trim($_POST["org"]) == "") {
+                $org_error = true;
+                $update = false;
+            } else {
+                $edits["org"] = $_POST["org"];
+                $update = true;
+            }
         }
 
         //check descr1/s_descr for modified input
         if (trim($_POST["descr1"]) != trim($issue["s_descr"])) {
-            $edits["descr1"] = $_POST["descr1"];
-            $update = true;
+            if (trim($_POST["descr1"]) == "") {
+                $descr_error = true;
+                $update = false;
+            } else {
+                $edits["descr1"] = $_POST["descr1"];
+                $update = true;
+            }
         }
 
         //check descr2/l_descr for modified input
@@ -149,11 +164,13 @@
             <!-- organization -->
             <label for="org">Organization: </label>
             <input id="org" type="text" style="padding-top: 5px;" name="org" value=" <?php echo $issue["organization"]; ?> " <?php if ($disable) {echo 'disabled="true"';} ?>><br>
+            <?php if ($org_error) {echo '<label style="color: red;">An invalid organization was entered</label><br>';} ?>
             <br>
 
             <!-- short description -->
             <label for="descr1">Description: </label>
             <input id="descr1" type="text" style="padding-top: 5px;" name="descr1" value=" <?php echo $issue["s_descr"]; ?> " <?php if ($disable) {echo 'disabled="true"';} ?>><br>
+            <?php if ($descr_error) {echo '<label style="color: red;">An invalid description was entered</label><br>';} ?>
             <br>
  
             <!-- long description -->
@@ -267,6 +284,7 @@
             <!-- new comment text area, only display this if issue status is open -->
             <?php if ($issue["status"] == "OPEN") { ?>
                 <textarea id="new_comment" style="width: 625px; height: 115px;" rows="8" cols="35" name="new_comment" placeholder="New Comment"></textarea><br>
+                <?php if ($comment_error) {echo '<label style="color: red;">An invalid comment was entered</label><br>';} ?>
                 <br>
 
                 <!-- post comment button -->

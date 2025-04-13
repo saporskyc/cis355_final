@@ -44,19 +44,19 @@
         $proceed = true;
 
         //check organization field for input
-        if (empty($_POST["org"])) {
+        if (trim($_POST["org"]) == "") {
             $proceed = false;
             $org_error = true;
         }
 
         //check descr1/s_descr for real input
-        if (empty($_POST["descr1"])) {
+        if (trim($_POST["descr1"]) == "") {
             $proceed = false;
             $descr_error = true;
         }
 
         //check priority for real input
-        if (empty($_POST["priority"])) {
+        if (trim($_POST["priority"]) == "") {
             $proceed = false;
             $priority_error = true;
         }
