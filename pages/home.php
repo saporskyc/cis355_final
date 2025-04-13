@@ -26,11 +26,20 @@
     //pull user currently logged in
     $user = UserUtility::getOne($_SESSION["user_id"]);
 
-    //pull all issues
-    $issues = IssueUtility::getAll();
-
-    //sort the issues
-    $issues = IssueUtility::sortIssues($_SESSION["user_id"], $issues);
+    $issues = null;
+    if (!isset($_POST["view_type"])) {
+        //pull all open issues if the user is an admin, otherwise pull issues assigned to the current user
+        $issues = $_SESSION["admin"] == "Y" ? IssueUtility::getOpen() : IssueUtility::getAssigned($_SESSION["user_id"]);
+    } else if ($_POST["view_type"] == "closed") {
+        //pull the closed issues
+        $issues = IssueUtility::getClosed();
+    } else if ($_POST["view_type"] == "open") {
+        //pull only open issues
+        $issues = IssueUtility::getOpen();
+    } else if ($_POST["view_type"] == "my_assigned") {
+        //pull the user's assigned issues
+        $issues = IssueUtility::getAssigned($_SESSION["user_id"]);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +58,7 @@
         <!-- buttons -->
         <row>
             <!-- logout button -->
-            <form style="display: inline; padding-right: 75px;" action="../utility/logout.php">
+            <form style="display: inline; padding-right: 15px;" action="../utility/logout.php">
                 <button type="submit">
                     Logout
                 </button>
@@ -64,6 +73,13 @@
                 </form>
             <?php } ?>
 
+            <!-- user profile button -->
+            <form style="display: inline; padding-right: 75px;" method="GET" action="edit_user.php?page_form=">
+                <button name="page_form" type="submit" value="my_profile">
+                    My Profile
+                </button>
+            </form>
+            
             <!-- new issue button -->
             <form style="display: inline;" action="new_issue.php">
                 <button type="submit">
@@ -71,10 +87,25 @@
                 </button>
             </form>
 
-            <!-- user profile button -->
-            <form style="display: inline;" method="GET" action="edit_user.php?page_form=">
-                <button name="page_form" type="submit" value="my_profile">
-                    My Profile
+            <!-- table filtering -->
+            <!-- view user's assigned issues -->
+            <form style="display: inline; padding-left: 75px;" action="home.php" method="POST">
+                <button type="submit" name="view_type" value="my_assigned">
+                    My Issues
+                </button>
+            </form>
+
+            <!-- view open issues -->
+            <form style="display: inline;" action="home.php" method="POST">
+                <button type="submit" name="view_type" value="open">
+                    Open Issues
+                </button>
+            </form>
+
+            <!-- view closed issues -->
+            <form style="display: inline;" action="home.php" method="POST">
+                <button type="submit" name="view_type" value="closed">
+                    Closed Issues
                 </button>
             </form>
         </row>
@@ -101,33 +132,37 @@
             <?php
                 //loop over all issues and populate table with data
                 $num_issues = count($issues);
-                $iteration = 1;
-                $bg_style = '';
-                foreach ($issues as $issue) {
-                    $iteration % 2 == 0 ? $bg_style = 'background-color:rgb(191, 204, 204);' : $bg_style = '';
-                    echo '<tr style="text-align: center;'. $bg_style .'">';
-                        //organization
-                        echo '<td>' . trim($issue["organization"]) . "</td>";
-                        //short description
-                        echo '<td>' . trim($issue["s_descr"]) . "</td>";
-                        //open date
-                        echo '<td>' . trim($issue["open_date"]) . "</td>";
-                        //status
-                        echo '<td>' . trim($issue["status"]) . "</td>";
-                        //priority
-                        echo '<td>' . trim($issue["priority"]) . "</td>";
-                        //full name
-                        echo '<td>' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
-                        //manage button
-                        echo '<td>' .
-                                '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?id=' . $issue["issue_id"] .'">' .
-                                    '<button name="id" value="' . $issue["issue_id"] . '">' .
-                                        'Manage' .
-                                    '</button>' .
-                                '</form>' .
-                             '</td>';
-                    echo "<tr>";
-                    $iteration++;
+                if ($num_issues > 0) {
+                    $iteration = 1;
+                    $bg_style = '';
+                    foreach ($issues as $issue) {
+                        $iteration % 2 == 0 ? $bg_style = 'background-color:rgb(191, 204, 204);' : $bg_style = '';
+                        echo '<tr style="text-align: center;'. $bg_style .'">';
+                            //organization
+                            echo '<td>' . trim($issue["organization"]) . "</td>";
+                            //short description
+                            echo '<td>' . trim($issue["s_descr"]) . "</td>";
+                            //open date
+                            echo '<td>' . trim($issue["open_date"]) . "</td>";
+                            //status
+                            echo '<td>' . trim($issue["status"]) . "</td>";
+                            //priority
+                            echo '<td>' . trim($issue["priority"]) . "</td>";
+                            //full name
+                            echo '<td>' . trim($issue["f_name"]) . " " . trim($issue["l_name"]) . "</td>";
+                            //manage button
+                            echo '<td>' .
+                                    '<form style="display: inline; padding-right: 5px;" method="GET" action="edit_issue.php?id=' . $issue["issue_id"] .'">' .
+                                        '<button name="id" value="' . $issue["issue_id"] . '">' .
+                                            'Manage' .
+                                        '</button>' .
+                                    '</form>' .
+                                '</td>';
+                        echo "<tr>";
+                        $iteration++;
+                    }
+                } else {
+                    echo '<tr style="text-align: center;"><td>No issues to display</td></tr>';
                 }
             ?>
         </table>

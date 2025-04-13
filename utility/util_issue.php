@@ -14,6 +14,63 @@
             //set query and connect to database
             $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
                     LEFT JOIN users ON users.user_id = issues.user_id
+                    ORDER BY issues.priority, issues.open_date";
+            $pdo = Database::connect();
+
+            //run query, convert data into array
+            $data = $pdo->query($qry);
+
+            //disconnect
+            Database::disconnect();
+
+            //return data as array of all returned records
+            return $data->fetchAll(PDO::FETCH_DEFAULT);
+        }
+
+        //pull all open issues
+        public static function getOpen () {
+            //set query and connect to database
+            $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
+                    LEFT JOIN users ON users.user_id = issues.user_id
+                    WHERE issues.status = 'OPEN'
+                    ORDER BY issues.priority";
+            $pdo = Database::connect();
+
+            //run query, convert data into array
+            $data = $pdo->query($qry);
+
+            //disconnect
+            Database::disconnect();
+
+            //return data as array of all returned records
+            return $data->fetchAll(PDO::FETCH_DEFAULT);
+        }
+
+        //pull all closed issues
+        public static function getClosed () {
+            //set query and connect to database
+            $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
+                    LEFT JOIN users ON users.user_id = issues.user_id
+                    WHERE issues.status = 'CLOSED'
+                    ORDER BY issues.close_date, issues.priority";
+            $pdo = Database::connect();
+
+            //run query, convert data into array
+            $data = $pdo->query($qry);
+
+            //disconnect
+            Database::disconnect();
+
+            //return data as array of all returned records
+            return $data->fetchAll(PDO::FETCH_DEFAULT);
+        }
+
+        //pull all open issues associated with a specific user
+        public static function getAssigned (string $id) {
+            //set query and connect to database
+            $qry = "SELECT issues.*, users.f_name, users.l_name FROM issues
+                    LEFT JOIN users ON users.user_id = issues.user_id
+                    WHERE issues.status = 'OPEN' AND issues.user_id = '$id'
                     ORDER BY issues.priority";
             $pdo = Database::connect();
 
