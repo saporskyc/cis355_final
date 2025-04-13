@@ -35,13 +35,13 @@
         header('Location: home.php');
     }
 
-    //check for values in post
+    //input validation vars
+    $org_error = false;
+    $descr_error = false;
+    $priority_error = false;
     if (!empty($_POST)) {
-        //init validation vars
+        //bool to check before carrying out add issue operation
         $proceed = true;
-        $org_error = false;
-        $descr_error = false;
-        $priority_error = false;
 
         //check organization field for input
         if (empty($_POST["org"])) {
@@ -97,28 +97,46 @@
         <form action="new_issue.php" method="post">
             <!-- organization -->
             <label for="org">Organization: </label>
-            <input id="org" type="text" style="padding-top: 5px;" name="org"><br>
+            <input id="org" type="text" style="padding-top: 5px;" name="org" value="<?php echo isset($_POST["org"]) ? $_POST["org"] : ""; ?>"><br>
+            <?php if ($org_error) {echo '<label style="color: red;"> Please enter a valid organization</label><br>';} ?>
             <br>
 
             <!-- short description -->
             <label for="descr1">Description: </label>
-            <input id="descr1" type="text" style="padding-top: 5px;" name="descr1"><br>
+            <input id="descr1" type="text" style="padding-top: 5px;" name="descr1" value="<?php echo isset($_POST["descr1"]) ? $_POST["descr1"] : ""; ?>"><br>
+            <?php if ($descr_error) {echo '<label style="color: red;"> Please enter a valid description</label><br>';} ?>
             <br>
  
             <!-- long description -->
-            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details"></textarea><br>
+            <textarea id="descr2" style="width: 625px; height: 150px;" rows="8" cols="35" name="descr2" placeholder="More Details"><?php if (isset($_POST["descr2"])) {echo $_POST["descr2"];} ?></textarea><br>
             <br>
 
             <!-- priority dropdown -->
-            <label for="priority">Priority: </label>
+            <?php
+                if ($priority_error) {
+                    echo '<label for="priority" style="color: red;"> Please enter a valid priority</label>';
+                } else {
+                    echo '<label for="priority">Priority: </label>';
+                }
+            ?>
             <select id="priority" type="text" style="text-align: center;" name="priority">
                 <?php
-                    //insert default value for dropdown
-                    echo '<option value=""></option>';
-
-                    //create options 1 - 6
-                    for ($i = 1; $i < 7; $i++) {
-                        echo '<option value="' . $i . '">' . $i . '</option>';
+                    if (isset($_POST["priority"])) {
+                        //a selection has been made, make it the first option
+                        echo '<option value="'. $_POST["priority"] .'">'. $_POST["priority"] .'</option>';
+                        
+                        //create the rest of the options
+                        for ($i = 1; $i < 7; $i++) {
+                            if ($i != $_POST["priority"]) {
+                                echo '<option value="' . $i . '">' . $i . '</option>';
+                            }
+                        }
+                    } else {
+                        //fresh page, create default list
+                        echo '<option value=""></option>';
+                        for ($i = 1; $i < 7; $i++) {
+                            echo '<option value="' . $i . '">' . $i . '</option>';
+                        }
                     }
                 ?>
             </select>
@@ -128,14 +146,29 @@
                 <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
                 <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned">
                     <?php
-                        //insert default value for dropdown
-                        echo '<option value="">Unassigned</option>';
+                        if (isset($_POST["assigned"])) {
+                            //a selection has already been made, make sure it is the first in the list of options
+                            //loop over potential options and locate what was selected
+                            foreach ($users as $user) {
+                                if ($user["user_id"] == $_POST["assigned"]) {
+                                    echo '<option value=' . $user["user_id"] . '>' . trim($user["f_name"]) . ' ' . trim($user["l_name"]) . '</option>';
+                                    break;
+                                }
+                            }
 
-                        //loop over existing users and populate the dropdown
-                        foreach ($users as $user) {
-                            echo '<option value=' . $user["user_id"] . '>' .
-                                trim($user["f_name"]) . ' ' . trim($user["l_name"]) .
-                                '</option>';
+                            //output the rest of the options
+                            foreach ($users as $user) {
+                                if ($user["user_id"] != $_POST["assigned"]) {
+                                    echo '<option value=' . $user["user_id"] . '>' . trim($user["f_name"]) . ' ' . trim($user["l_name"]) . '</option>';
+                                }
+                            }
+                            echo '<option value="">Unassigned</option>';
+                        } else {
+                            //fresh page, create default list
+                            echo '<option value="">Unassigned</option>';
+                            foreach ($users as $user) {
+                                echo '<option value=' . $user["user_id"] . '>' . trim($user["f_name"]) . ' ' . trim($user["l_name"]) . '</option>';
+                            }
                         }
                     ?>
                 </select><br>
