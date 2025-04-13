@@ -29,14 +29,20 @@
     $issues = null;
     if (!isset($_POST["view_type"])) {
         //pull all open issues if the user is an admin, otherwise pull issues assigned to the current user
-        $issues = $_SESSION["admin"] == "Y" ? IssueUtility::getOpen() : IssueUtility::getAssigned($_SESSION["user_id"]);
+        if ($issues = $_SESSION["admin"] == "Y") {
+            $issues = IssueUtility::getOpen();
+            $_POST["view_type"] = "open";
+        } else {
+            $issues = IssueUtility::getAssigned($_SESSION["user_id"]);
+            $_POST["view_type"] = "assigned";
+        }
     } else if ($_POST["view_type"] == "closed") {
         //pull the closed issues
         $issues = IssueUtility::getClosed();
     } else if ($_POST["view_type"] == "open") {
         //pull only open issues
         $issues = IssueUtility::getOpen();
-    } else if ($_POST["view_type"] == "my_assigned") {
+    } else if ($_POST["view_type"] == "assigned") {
         //pull the user's assigned issues
         $issues = IssueUtility::getAssigned($_SESSION["user_id"]);
     }
@@ -90,7 +96,7 @@
             <!-- table filtering -->
             <!-- view user's assigned issues -->
             <form style="display: inline; padding-left: 75px;" action="home.php" method="POST">
-                <button type="submit" name="view_type" value="my_assigned">
+                <button type="submit" name="view_type" value="assigned">
                     My Issues
                 </button>
             </form>
@@ -162,7 +168,7 @@
                         $iteration++;
                     }
                 } else {
-                    echo '<tr style="text-align: center;"><td>No issues to display</td></tr>';
+                    echo '<tr style="text-align: center;"><td>No ' . $_POST["view_type"] . ' issues to display</td></tr>';
                 }
             ?>
         </table>
