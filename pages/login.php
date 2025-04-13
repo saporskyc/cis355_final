@@ -22,22 +22,22 @@
     }
 
     //check for an entered email and password
+    $login_error = "";
     if (!empty($_POST["entered_email"]) && !empty($_POST["entered_pass"])) {
         //validate login
-        $user = UserUtility::validateLogin($_POST["entered_email"], $_POST["entered_pass"]);
+        $result = UserUtility::validateLogin($_POST["entered_email"], $_POST["entered_pass"]);
 
         //check if login succeeded
-        if (is_array($user) && !empty($user)) {
+        if (is_array($result) && !empty($result)) {
             //login success, store user_id in $_SESSION
-            $_SESSION["user_id"] = $user["user_id"];
-            $_SESSION["admin"] = $user["admin"];
-
+            $_SESSION["user_id"] = $result["user_id"];
+            $_SESSION["admin"] = $result["admin"];
             //clear post, redirect to application home page
             $_POST = array();
             header('Location: home.php');
         } else {
-            //login failed, set error display values, destroy session
-            echo "login failed";
+            //login failed, set error display values, destroy session to clear stored values
+            $login_error = $result;
             session_destroy();
         }
     }
@@ -54,6 +54,12 @@
             <br>
             <input type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
             <br>
+
+            <!-- display the login error if there is one -->
+            <?php if ($login_error != "") { ?>
+                <label style="color: red;"> <?php echo $login_error; ?> </label><br>
+                <br>
+            <?php } ?>
 
             <!-- login button -->
             <button id="login_button" style="padding-right: 15px" type="submit">

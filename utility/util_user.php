@@ -206,14 +206,15 @@
             $data = null;
             try {
                 $data = $pdo->query($qry);
+                $data = $data->fetchAll(PDO::FETCH_DEFAULT);
             } catch (PDOException $e) {
                 Database::disconnect();
                 echo $e->getMessage() . "<br>";
-                return false;
+                return;
             }
 
             //check if any users with a matching email were pulled
-            if ($data != null) {
+            if (count($data) > 0) {
                 //loop through the users and check passwords
                 foreach ($data as $user) {
                     if (password_verify($password, $user['password'])) {
@@ -222,10 +223,14 @@
                         return $user;
                     }
                 }
-            } else {
-                //disconnect from db and return false
+
+                //disconnect from db and return password error message
                 Database::disconnect();
-                return false;
+                return "Invalid password";
+            } else {
+                //disconnect from db and return email error message
+                Database::disconnect();
+                return "Invalid email";
             }
         }
     }
