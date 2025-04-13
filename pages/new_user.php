@@ -38,14 +38,14 @@
         }
     }
 
-    //check for values in post
+    //input validation vars
+    $email_error = false;
+    $password_error = false;
+    $fname_error = false;
+    $lname_error = false;
     if (!empty($_POST)) {
-        //init validation vars
+        //bool to check before carrying out update operation
         $proceed = true;
-        $email_error = false;
-        $password_error = false;
-        $fname_error = false;
-        $lname_error = false;
 
         //check email field for input
         if (!empty($_POST["entered_email"])) {
@@ -99,22 +99,26 @@
         <form action="new_user.php" method="post">
             <!-- email -->
             <label for="email">Email: </label>
-            <input id="email" type="text" style="padding-top: 5px;" name="entered_email" placeholder="abcefg@outlook.com"><br>
+            <input id="email" type="text" style="padding-top: 5px;" name="entered_email" placeholder="example@outlook.com" value="<?php echo isset($_POST["entered_email"]) ? $_POST["entered_email"] : ""; ?>"><br>
+            <?php if ($email_error) {echo '<label style="color: red;"> Please enter a valid email</label><br>';} ?>
             <br>
 
             <!-- password -->
             <label for="password">Password: </label>
-            <input id="password" type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password"><br>
+            <input id="password" type="password" style="padding-top: 5px;" name="entered_pass" placeholder="Password" value="<?php echo isset($_POST["entered_pass"]) ? $_POST["entered_pass"] : ""; ?>"><br>
+            <?php if ($password_error) {echo '<label style="color: red;"> Please enter a valid password</label><br>';} ?>
             <br>
 
             <!-- first name -->
             <label for="fname">First Name: </label>
-            <input id="fname" type="text" style="padding-top: 5px;" name="entered_fname" placeholder="John"><br>
+            <input id="fname" type="text" style="padding-top: 5px;" name="entered_fname" placeholder="John" value="<?php echo isset($_POST["entered_fname"]) ? $_POST["entered_fname"] : ""; ?>"><br>
+            <?php if ($fname_error) {echo '<label style="color: red;"> Please enter a valid first name</label><br>';} ?>
             <br>
 
             <!-- last name -->
             <label id="lname" for="email">Last Name: </label>
-            <input id="lname" type="text" style="padding-top: 5px;" name="entered_lname" placeholder="Doe"><br>
+            <input id="lname" type="text" style="padding-top: 5px;" name="entered_lname" placeholder="Doe" value="<?php echo isset($_POST["entered_lname"]) ? $_POST["entered_lname"] : ""; ?>"><br>
+            <?php if ($lname_error) {echo '<label style="color: red;"> Please enter a valid last name</label><br>';} ?>
             <br>
 
             <!-- confirm button -->

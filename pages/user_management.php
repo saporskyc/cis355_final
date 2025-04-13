@@ -42,14 +42,14 @@
         <!-- buttons -->
         <row>
             <!-- logout button -->
-            <form style="display: inline; padding-right: 25px" action="../utility/logout.php">
+            <form style="display: inline; padding-right: 45px" action="../utility/logout.php">
                 <button type="submit">
                     Logout
                 </button>
             </form>
 
             <!-- home button -->
-            <form style="display: inline;" action="home.php">
+            <form style="display: inline; padding-right: 45px" action="home.php">
                 <button type="submit">
                     Home
                 </button>
