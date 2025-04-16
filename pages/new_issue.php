@@ -1,12 +1,10 @@
 <!--
     Author: Calob Saporsky
     Description: issue creation page
-                 creates a new issue and redirects to edit_issue.php
-                 on success
+                 creates a new issue and redirects to edit_issue.php on success
 -->
 
 <?php
-    echo "hello from new_issue.php<br>";
     //import necessary files
     require "../utility/util_issue.php";
     require "../utility/util_user.php";
@@ -19,7 +17,6 @@
         //invalid access, destroy session and redirect
         session_destroy();
         header('Location: ../launch_page.php');
-        exit(0);
     }
 
     //check if the user is an admin

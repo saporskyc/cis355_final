@@ -1,11 +1,10 @@
 <!--
     Author: Calob Saporsky
-    Description: user profile page
-                 allows a user to edit their own information
+    Description: allows a user to edit their own information
+                 on cancel, navigates back to either home.php or user_management.php
 -->
 
 <?php
-    echo "hello from edit_user.php<br>";
     //start session
     session_start();
 
@@ -17,7 +16,6 @@
         //invalid access, destroy session and redirect
         session_destroy();
         header('Location: ../launch_page.php');
-        exit(0);
     }
 
     //check if home was clicked
@@ -34,9 +32,9 @@
         header('Location: user_management.php');
     }
 
-    //check if admin user
+    //check if admin user and arrived through the user management page
     $is_admin = false;
-    if(isset($_GET["id"]) && !empty($_GET["id"]) && $_SESSION["admin"] == "Y") {
+    if(isset($_GET["id"]) && trim($_GET["id"]) != "" && $_SESSION["admin"] == "Y") {
         $is_admin = true;
     }
 
@@ -49,7 +47,7 @@
         $edits = array();
 
         //check email field for input
-        if (trim($_POST["entered_email"]) != "") {
+        if (isset($_POST["entered_email"]) && trim($_POST["entered_email"]) != "") {
             //make sure it is of form email
             if (filter_var($_POST["entered_email"], FILTER_VALIDATE_EMAIL)) {
                 $edits["entered_email"] = $_POST["entered_email"];
@@ -58,26 +56,29 @@
         }
 
         //check password for real input
-        if (trim($_POST["entered_pass"]) != "") {
+        if (isset($_POST["entered_pass"]) && trim($_POST["entered_pass"]) != "") {
             $edits["entered_pass"] = $_POST["entered_pass"];
             $proceed = true;
         }
 
         //check fname for real input
-        if (trim($_POST["entered_fname"]) != "") {
+        if (isset($_POST["entered_fname"]) && trim($_POST["entered_fname"]) != "") {
             $edits["entered_fname"] = $_POST["entered_fname"];
             $proceed = true;
         }
 
         //check lname for real input
-        if (trim($_POST["entered_lname"]) == "") {
+        if (isset($_POST["entered_lname"]) && trim($_POST["entered_lname"]) != "") {
             $edits["entered_lname"] = $_POST["entered_lname"];
             $proceed = true;
         }
 
-        //check lname for real input
-        if (trim($_POST["entered_admin"]) == "") {
+        //check admin for real input
+        if (isset($_POST["entered_admin"]) && trim($_POST["entered_admin"]) != "") {
             $edits["entered_admin"] = $_POST["entered_admin"];
+            $proceed = true;
+        } else if (!isset($_POST["entered_admin"])) {
+            $edits["entered_admin"] = "N";
             $proceed = true;
         }
 
@@ -99,7 +100,7 @@
 
                 //pull the user again to display changes
                 if($is_admin) {
-                    //arrived through admin page
+                    //arrived through user management
                     $user = UserUtility::getOne($_GET["id"]);
                 } else {
                     //arrived through my profile button
@@ -110,7 +111,7 @@
     } else {
         //make initial user pull
         if ($is_admin) {
-            //arrived through admin page
+            //arrived through user management
             $user = UserUtility::getOne($_GET["id"]);
         } else {
             //arrived through my profile button
@@ -150,9 +151,9 @@
             <!-- admin -->
             <?php if ($is_admin) { ?>
                 <label for="admin">Admin User: </label>
-                <input type="text" style="padding-top: 5px;" id="admin" name="entered_admin" placeholder=<?php echo '"' . $user["admin"] . '"' ?>><br>
+                <input type="checkbox" style="padding-top: 5px;" id="admin" name="entered_admin" value="Y" <?php echo $user["admin"] == "Y" ? "checked" : ""; ?>><br>
                 <br>
-            <?php }?>
+            <?php } ?>
 
             <!-- confirm button -->
             <button name="confirm" type="submit">

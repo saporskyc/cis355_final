@@ -12,7 +12,7 @@
         //pull all users
         public static function getAll () {
             //set query and connect to database
-            $qry = "SELECT users.user_id, users.admin, users.f_name, users.l_name, users.email FROM users";
+            $qry = "SELECT * FROM users";
             $pdo = Database::connect();
 
             //run query, convert data into array
@@ -44,7 +44,7 @@
         /*
             create a new user
             new users are not admins by default
-            a user must be set to admin through the edit screen or the database directly
+            a user must be set to admin through the edit screen (by an admin) or the database directly
         */
         public static function newUser (string $f_name, string $l_name, string $email, string $password) {
             //hash password

@@ -1,13 +1,12 @@
 <!--
     Author: Calob Saporsky
     Description: application home page
-                 displays all current issues and allows navigation to issues assigned to user,
-                 issue creation, issue details, user profile for self-editing, and user
-                 management screen if the user is an admin
+                 displays all current issues and allows navigation to:
+                    user_management.php, edit_user.php (through My Profile button),
+                    and new_issue.php
 -->
 
 <?php
-    echo "hello from home.php<br>";
     //import necessary file
     require "../utility/util_issue.php";
     require "../utility/util_user.php";
@@ -20,7 +19,6 @@
         //invalid access, destroy session and redirect
         session_destroy();
         header('Location: ../launch_page.php');
-        exit(0);
     }
 
     //pull user currently logged in
@@ -80,8 +78,8 @@
             <?php } ?>
 
             <!-- user profile button -->
-            <form style="display: inline; padding-right: 75px;" method="GET" action="edit_user.php?page_form=">
-                <button name="page_form" type="submit" value="my_profile">
+            <form style="display: inline; padding-right: 75px;" action="edit_user.php">
+                <button type="submit">
                     My Profile
                 </button>
             </form>

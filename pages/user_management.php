@@ -1,13 +1,13 @@
 <!--
     Author: Calob Saporsky
     Description: user management page
+                 only available to admin users
                  displays all current users
-                 allows admin users to add/edit/delete other users, including an option to make them admin users
+                 allows user to add/edit/delete other users
                  navigates to edit_user.php, new_user.php, or home.php 
 -->
 
 <?php
-    echo "hello from user_management.php<br>";
     //import necessary file
     require "../utility/util_user.php";
 
@@ -19,7 +19,6 @@
         //invalid access, destroy session and redirect
         session_destroy();
         header('Location: ../launch_page.php');
-        exit(0);
     }
 
     //check if delete was clicked

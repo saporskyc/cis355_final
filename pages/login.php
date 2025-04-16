@@ -1,12 +1,10 @@
 <!--
     Author: Calob Saporsky
     Description: user login page
-                 redirects to issue listing page on successful login or the
-                 landing page on cancel
+                 navigates to home.php on successful login, or launch_page.php on cancel/failed login
 -->
 
 <?php
-    echo "hello from login.php<br>";
     //import necessary file
     require "../utility/util_user.php";
 

@@ -1,12 +1,11 @@
 <!--
     Author: Calob Saporsky
     Description: user registration/creation page
-                 creates a new user and redirects them to the login page
-                 if the user add was successful
+                 creates a new user and redirects them back to either login.php
+                 or user_management.php if the user add was successful
 -->
 
 <?php
-    echo "hello from new_user.php<br>";
     //import necessary file
     require "../utility/util_user.php";
 

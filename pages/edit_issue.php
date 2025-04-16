@@ -1,12 +1,12 @@
 <!--
     Author: Calob Saporsky
     Description: issue edit/management page
-                 displays an issues information and all of its associated comments
-                 also allows an admin user to delete it
+                 displays an issue's information and all of its associated comments
+                 also allows an admin user to delete the issue if it is still open
+                 navigates to home.php
 -->
 
 <?php
-    echo "hello from edit_issue.php<br>";
     //import necessary files
     require "../utility/util_issue.php";
     require "../utility/util_user.php";
@@ -20,7 +20,6 @@
         //invalid access, destroy session and redirect
         session_destroy();
         header('Location: ../launch_page.php');
-        exit(0);
     }
 
     //check if cancel was clicked
@@ -238,12 +237,12 @@
             <br>
 
             <!-- open date -->
-            <label for="open_date">Open Date: </label>
+            <label for="open_date"><b>Open Date: </b></label>
             <label id="open_date" type="text" style="padding-top: 5px;"> <?php echo $issue["open_date"] ?> </label>
 
             <!-- close date -->
             <?php if (!empty($issue["close_date"])) { ?>
-                <label for="close_date" style="padding-left: 25px;">Close Date: </label>
+                <label for="close_date" style="padding-left: 25px;"><b>Close Date: </b></label>
                 <label id="close_date" type="text" style="padding-top: 5px; display: inline;"> <?php echo $issue["close_date"] ?> </label>
             <?php } ?>
             <br>

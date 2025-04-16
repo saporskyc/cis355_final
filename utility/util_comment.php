@@ -1,8 +1,8 @@
 <!--
     Author: Calob Saporsky
     Description: database utility class for interaction with table 'comments'
-                 comments desgined to not exist outside of an issue, so all
-                 fetching utility is built into util_issue.php
+                 comments desgined to not exist outside of an issue, and they are
+                 not editable once posted on an issue
 -->
 
 <?php
@@ -11,7 +11,7 @@
 
     class CommentUtility {
 
-        //pull all comments associated with the passed in issue id
+        //pull all comments associated with the passed in issue id, as well as the information of the user who posted it
         public static function getAssociated (string $id) {
             //set query and connect to database
             $qry = "SELECT comments.*, users.f_name, users.l_name

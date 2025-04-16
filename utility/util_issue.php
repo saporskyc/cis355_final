@@ -84,7 +84,7 @@
             return $data->fetchAll(PDO::FETCH_DEFAULT);
         }
 
-        //pull one issue, its comments, and the users who left the comments
+        //pull one issue, and the assigned user's id, first name and last name
         public static function getOne (string $id) {
             //set query and connect to database
             $qry = "SELECT issues.*, users.user_id, users.f_name, users.l_name
@@ -256,43 +256,6 @@
                     }
                 }
             }
-        }
-
-        /*
-            method to sort an array of issues
-            hierarchy is:
-                assigned to passed in user + open
-                open
-                closed
-            will not be viable for a large number of issues
-        */
-        public static function sortIssues (string $id, array $issues) {
-            //init vars
-            $sorted = array();
-
-            //collect the open tickets assigned to passed in user
-            foreach ($issues as $issue) {
-                if ($issue["user_id"] == $id && $issue["status"] == "OPEN") {
-                    array_push($sorted, $issue);
-                }
-            }
-
-            //collect the rest of the open tickets
-            foreach ($issues as $issue) {
-                if ($issue["user_id"] != $id && $issue["status"] == "OPEN") {
-                    array_push($sorted, $issue);
-                }
-            }
-
-            //collect the closed issues
-            foreach ($issues as $issue) {
-                if ($issue["status"] == "CLOSED") {
-                    array_push($sorted, $issue);
-                }
-            }
-
-            //return the sorted issues
-            return $sorted;
         }
     }
 ?>
