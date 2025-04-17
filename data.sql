@@ -7,7 +7,7 @@ START TRANSACTION;
 -- drop tables if they already exist
 DROP TABLE IF EXISTS `users`, `issues`, `comments`;
 
--- create table persons
+-- create table 'users'
 CREATE TABLE `users` (
     `user_id` int(11) NOT NULL AUTO_INCREMENT,
     `admin` varchar(3) DEFAULT "N",
@@ -18,7 +18,7 @@ CREATE TABLE `users` (
     Primary Key (`user_id`)
 );
 
--- create table issues
+-- create table 'issues'
 CREATE TABLE `issues` (
     `issue_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11),
@@ -32,7 +32,7 @@ CREATE TABLE `issues` (
     Primary Key (`issue_id`)
 );
 
--- create table comments
+-- create table 'comments'
 CREATE TABLE `comments` (
     `comment_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,

@@ -65,6 +65,12 @@
         $admin = true;
     }
 
+    //if admin, pull users for dropdown
+    $users = null;
+    if ($admin) {
+        $users = UserUtility::getAll();
+    }
+
     //check if the user is the one assigned to the issue
     $my_issue = false;
     if ($_SESSION["user_id"] == $issue["user_id"]) {
@@ -114,19 +120,29 @@
         }
 
         //check status for modified input
-        if (trim($_POST["status"]) != trim($issue["status"])) {
-            $edits["status"] = $_POST["status"];
-            $update = true;
+        if ($_POST["status"] != $issue["status"]) {
+            //make sure status has a valid value
+            if ($_POST["status"] != "OPEN" || $_POST["status"] != "CLOSED") {
+                $update = false;
+            } else {
+                $edits["status"] = $_POST["status"];
+                $update = true;
+            }
         }
 
         //check priority for modified input
-        if (trim($_POST["priority"]) != trim($issue["priority"])) {
-            $edits["priority"] = $_POST["priority"];
-            $update = true;
+        if ($_POST["priority"] != $issue["priority"]) {
+            //make sure priority has a valid value
+            if (intval($_POST["priority"]) < 1 || intval($_POST["priority"]) > 6) {
+                $update = false;
+            } else {
+                $edits["priority"] = $_POST["priority"];
+                $update = true;
+            }
         }
 
         //check assigned user for modified input
-        if (trim($_POST["assigned"]) != trim($issue["user_id"])) {
+        if ($_SESSION["admin"] == "Y" && $_POST["assigned"] != $issue["user_id"]) {
             $edits["assigned"] = $_POST["assigned"];
             $update = true;
         }
@@ -199,10 +215,10 @@
                 ?>
             </select>
             
-            <!-- assigned user dropdown, only display the issue's assigned user if the issue is closed or the user is not an admin -->
+            <!-- assigned user dropdown. if the issue is closed or the user is not an admin only display the issue's assigned user -->
             <label for="assigned" style="padding-left: 25px;">Assigned To: </label>
             <select id="assigned" style="padding-top: 5px; text-align: center; display: inline;" name="assigned"
-            <?php if (!$admin || $issue["status"] == 'CLOSED') {echo 'disabled="true"';} ?>>
+            <?php if (!$admin || $issue["status"] == "CLOSED") {echo 'disabled="true"';} ?>>
                 <?php
                     //check for an assigned user
                     if (!empty($issue["user_id"])) {
@@ -210,19 +226,13 @@
                         echo '<option value=' . $issue["user_id"] . '>' .
                              trim($issue["f_name"]) . ' ' . trim($issue["l_name"]) .
                              '</option>';
-                        
-                        //insert default value for dropdown
-                        echo '<option value="NULL">Unassigned</option>';
                     } else {
                         //insert default value for dropdown
                         echo '<option value="NULL">Unassigned</option>';
                     }
 
-                    //check if the user is an admin
-                    if ($admin) {
-                        //pull all users
-                        $users = UserUtility::getAll();
-
+                    //check if the user is an admin and the issue is open
+                    if ($admin && $issue["status"] == "OPEN") {
                         //loop over users and populate the dropdown
                         foreach ($users as $user) {
                             if ($issue["user_id"] != $user["user_id"]) {
@@ -251,7 +261,7 @@
             <!-- confirm button -->
             <?php if (!$disable) { ?>
                 <button id="confirm_button" name="confirm" type="submit">
-                    Save Changes
+                    Save Issue Changes
                 </button>
             <?php } ?>
 
@@ -288,7 +298,7 @@
 
                 <!-- post comment button -->
                 <button id="post_comment" name="post_comment" value="true" type="submit">
-                    Post
+                    Post Comment
                 </button>
             <?php } ?>
         </form>

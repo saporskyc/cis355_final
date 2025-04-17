@@ -5,6 +5,10 @@
 -->
 
 <?php
+    //display test users on login screen
+    echo 'admin user --> bosslife@test.com | mypassword<br>';
+    echo 'not an admin user --> oddtodd@test.com | mypassword<br>';
+
     //import necessary file
     require "../utility/util_user.php";
 

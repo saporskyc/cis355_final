@@ -4,10 +4,6 @@
                  login page or the registration page
 -->
 
-<?php
-    echo "hello from launch_page.php";
-?>
-
 <!DOCTYPE html>
 <html lang=en>
     <!-- page body -->
