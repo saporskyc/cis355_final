@@ -5,7 +5,7 @@
 
 <?php
     //import necessary files
-    require_once 'database.php';
+    require_once '../database/database.php';
 
     class UserUtility {
 
