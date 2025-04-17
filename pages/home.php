@@ -26,14 +26,9 @@
 
     $issues = null;
     if (!isset($_POST["view_type"])) {
-        //pull all open issues if the user is an admin, otherwise pull issues assigned to the current user
-        if ($issues = $_SESSION["admin"] == "Y") {
-            $issues = IssueUtility::getOpen();
-            $_POST["view_type"] = "open";
-        } else {
-            $issues = IssueUtility::getAssigned($_SESSION["user_id"]);
-            $_POST["view_type"] = "assigned";
-        }
+        //pull all open issues by default
+        $issues = IssueUtility::getOpen();
+        $_POST["view_type"] = "open";
     } else if ($_POST["view_type"] == "closed") {
         //pull the closed issues
         $issues = IssueUtility::getClosed();
@@ -62,7 +57,7 @@
         <!-- buttons -->
         <row>
             <!-- logout button -->
-            <form style="display: inline; padding-right: 15px;" action="../utility/logout.php">
+            <form style="display: inline; padding-right: 45px;" action="../utility/logout.php">
                 <button type="submit">
                     Logout
                 </button>
@@ -93,8 +88,9 @@
 
             <!-- table filtering -->
             <!-- view user's assigned issues -->
-            <form style="display: inline; padding-left: 75px;" action="home.php" method="POST">
-                <button type="submit" name="view_type" value="assigned">
+            <label for="first_filter" style="padding-left: 70px;"><b>Table Filtering: </b></label>
+            <form style="display: inline;" action="home.php" method="POST">
+                <button id="first_filter" type="submit" name="view_type" value="assigned">
                     My Issues
                 </button>
             </form>

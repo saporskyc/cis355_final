@@ -273,7 +273,7 @@
             <!-- delete button, only display if it as admin user and the issue is not closed -->
             <?php if ($admin && $issue["status"] != 'CLOSED') { ?>
                 <button id="delete_button" name="delete" value="true" type="submit">
-                    Delete
+                    Delete Issue
                 </button>
             <?php } ?>
         </form>
